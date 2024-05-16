@@ -1,0 +1,10 @@
+{
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit",
+            "source.fixAll": "explicit"
+        }
+    },
+    "ruff.organizeImports": false,
+    "editor.formatOnSave": true
+}
