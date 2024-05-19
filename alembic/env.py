@@ -8,6 +8,8 @@ from alembic import context
 from os import getenv
 from dotenv import load_dotenv
 from db.db_setup import Base
+from db.models import user  # noqa: F401
+
 
 
 # this is the Alembic Config object, which provides
