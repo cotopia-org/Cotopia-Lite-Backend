@@ -24,6 +24,8 @@ from auth import (
 from common.http_exceptions import MISSMATCHAUTH
 from db.db_setup import get_db
 from schemas.user import User, UserCreate, UserUpdate
+from os import getenv
+from dotenv import load_dotenv
 
 router = fastapi.APIRouter()
 
@@ -95,9 +97,11 @@ async def get_livekit_token(
     current_user: Annotated[User, Depends(get_current_active_user)],
     db: Session = Depends(get_db),
 ):
-    # will automatically use the LIVEKIT_API_KEY and LIVEKIT_API_SECRET env vars
+    load_dotenv()
     token = (
-        api.AccessToken(api_key="devkey", api_secret="secret")
+        api.AccessToken(
+            api_key=getenv("LIVEKIT_API_KEY"), api_secret=getenv("LIVEKIT_API_SECRET")
+        )
         .with_identity("python-bot")
         .with_name("Python Bot")
         .with_grants(
