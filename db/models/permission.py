@@ -4,9 +4,8 @@ from ..db_setup import Base
 from .mixins import Timestamp
 
 
-class Role(Timestamp, Base):
-    __tablename__ = "roles"
+class Permission(Timestamp, Base):
+    __tablename__ = "permissions"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(63), nullable=False)
-    description = Column(String(255), nullable=True)
+    ability = Column(String(63), nullable=False)
