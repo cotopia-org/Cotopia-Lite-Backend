@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 from sqlalchemy import Column, DateTime
 from sqlalchemy.orm import declarative_mixin
@@ -6,5 +6,5 @@ from sqlalchemy.orm import declarative_mixin
 
 @declarative_mixin
 class Timestamp:
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC), nullable=False)
+    updated_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC), nullable=False)
