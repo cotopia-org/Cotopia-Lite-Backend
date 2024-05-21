@@ -9,7 +9,7 @@ class Room(Timestamp, Base):
     __tablename__ = "rooms"
 
     id = Column(Integer, primary_key=True, index=True)
-    workspace_id = Column(Integer, ForeignKey("workspaces.id"))
+    workspace_id = Column(Integer, ForeignKey("workspaces.id"), primary_key=True)
     workspace = relationship("Workspace")
     is_active = Column(Boolean, default=True)
     is_locked = Column(Boolean, default=False)
