@@ -1,14 +1,16 @@
-from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String, ForeignKey
 
 from ..db_setup import Base
 from .mixins import Timestamp
+from sqlalchemy.orm import relationship
 
 
 class Room(Timestamp, Base):
     __tablename__ = "rooms"
 
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(100), unique=True, index=True, nullable=False)
+    workspace_id = Column(Integer, ForeignKey("workspaces.id"))
+    workspace = relationship("Workspace")
     is_active = Column(Boolean, default=True)
     is_locked = Column(Boolean, default=False)
     passcode = Column(String(15), nullable=True)
