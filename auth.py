@@ -19,8 +19,8 @@ from schemas import user as schemas
 # openssl rand -hex 32
 load_dotenv()
 SECRET_KEY = getenv("SECRET_KEY")
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 6000
+ALGORITHM = getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
 
 
 class Token(BaseModel):
