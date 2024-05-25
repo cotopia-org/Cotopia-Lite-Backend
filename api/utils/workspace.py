@@ -36,5 +36,11 @@ def edit_ws(db: Session, workspace_id: int, workspace: WorkspaceUpdate):
     return db_workspace
 
 
-def delete_ws():
-    pass
+def delete_ws(db: Session, workspace_id: int):
+    db_workspace = db.query(WorkspaceModel).get(workspace_id)
+    db_workspace.updated_at = datetime.datetime.now(datetime.timezone.utc)
+    db_workspace.is_active = False
+
+    db.add(db_workspace)
+    db.commit()
+    return db_workspace
