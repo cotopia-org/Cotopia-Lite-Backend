@@ -98,8 +98,11 @@ async def get_livekit_token(
     db: Session = Depends(get_db),
 ):
     load_dotenv()
+    lkapi = api.LiveKitAPI(
+        'http://localhost:7880',
+    )
     token = (
-        api.AccessToken(
+        lkapi.AccessToken(
             api_key=getenv("LIVEKIT_API_KEY"), api_secret=getenv("LIVEKIT_API_SECRET")
         )
         .with_identity("python-bot")
