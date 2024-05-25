@@ -17,14 +17,14 @@ app = FastAPI(
     },
     servers=[
         {
-            "url": "https://livekit-api.cotopia.social",
+            "url": "lite-api.cotopia.social",
             "description": "Staging environment",
         },
         {"url": "http://127.0.0.1:8000", "description": "Local environment"},
     ],
 )
 
-origins = ["https://livekit-api.cotopia.social", "https://livekit-api.cotopia.social/"]
+origins = ["https://lite-api.cotopia.social", "https://lite-api.cotopia.social/"]
 
 app.add_middleware(
     CORSMiddleware,
