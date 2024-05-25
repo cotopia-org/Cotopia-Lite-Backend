@@ -60,7 +60,7 @@ async def update_workspace(
             )
 
 
-@router.delete("/workspace/{workspace_id}", response_model=Workspace, status_code=204)
+@router.delete("/workspace/{workspace_id}", status_code=204)
 async def delete_workspace(
     workspace_id: int,
     current_user: Annotated[User, Depends(get_current_active_user)],
