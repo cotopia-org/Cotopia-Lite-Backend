@@ -17,4 +17,4 @@ class Workspace(Timestamp, Base):
     avatar = Column(String(255), nullable=True)
     banner = Column(String(255), nullable=True)
     rooms = relationship("Room")
-    settingd = relationship("Setting")
+    settings = relationship("Setting")
