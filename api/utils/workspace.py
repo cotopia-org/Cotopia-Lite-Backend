@@ -17,6 +17,9 @@ def create_ws(db: Session, workspace: WorkspaceCreate, user_id: int):
 def get_ws_by_id(db: Session, workspace_id: int):
     return db.query(WorkspaceModel).filter(WorkspaceModel.id == workspace_id).first()
 
+def get_ws_by_user(db: Session, user_id: int):
+    return db.query(WorkspaceModel).filter(WorkspaceModel.user_id == user_id).all()
+
 
 def edit_ws():
     pass
