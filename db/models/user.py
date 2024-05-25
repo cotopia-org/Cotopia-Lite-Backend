@@ -2,6 +2,7 @@ from sqlalchemy import Boolean, Column, Integer, String
 
 from ..db_setup import Base
 from .mixins import Timestamp
+from sqlalchemy.orm import relationship
 
 
 class User(Timestamp, Base):
@@ -17,3 +18,5 @@ class User(Timestamp, Base):
     status = Column(String(31), nullable=True)
     avatar = Column(String(255), nullable=True)
     bio = Column(String(255), nullable=True)
+    workspaces = relationship("Workspace")
+    messages = relationship("Message")
