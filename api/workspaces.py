@@ -26,8 +26,14 @@ async def create_workspace(workspace: WorkspaceCreate,
 
 
 @router.get("/workspace/{workspace_id}", response_model=Workspace)
-async def get_workspace_by_id():
-    pass
+async def get_workspace_by_id(workspace_id: int,
+                              current_user: Annotated[User, Depends(get_current_active_user)],
+                              db: Session = Depends(get_db),
+                              ):
+    db_workspace = get_ws_by_id(db=db, workspace_id=workspace_id)
+    if db_workspace is None:
+        raise HTTPException(status_code=404, detail=f"Workspace (id = {workspace_id}) not found!")
+    return db_workspace
 
 
 @router.put("/workspace/{workspace_id}", response_model=Workspace, status_code=200)
