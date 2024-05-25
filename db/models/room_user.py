@@ -34,3 +34,7 @@ class RoomUser(Timestamp, Base):
         Enum(VideoStatus), nullable=False, default=VideoStatus.disconnected
     )
     coordinates = Column(String(31), nullable=False, default="0, 0")
+    screenshare_coordinates = Column(String(31), nullable=False, default="0, 0")
+    screenshare_size = Column(String(31), nullable=False, default="0, 0")
+    video_coordinates = Column(String(31), nullable=False, default="0, 0")
+    video_size = Column(String(31), nullable=False, default="0, 0")
