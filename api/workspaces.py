@@ -1,16 +1,18 @@
-from typing import Annotated
+from typing import Annotated, List
 
 import fastapi
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from api.utils.workspace import create_ws, get_ws_by_id, edit_ws, delete_ws
+from api.utils.room import get_da_rooms_by_workspace
 
 from auth import get_current_active_user
 from db.db_setup import get_db
 
 from schemas.user import User
 from schemas.workspace import Workspace, WorkspaceCreate, WorkspaceUpdate
+from schemas.room import Room
 
 
 router = fastapi.APIRouter()
@@ -80,5 +82,11 @@ async def delete_workspace(
             )
 
 
-# TO-DO
-# GET /workspace/{workspace_id}/rooms
+@router.get("/workspace/{workspace_id}/rooms", response_model=List[Room])
+async def get_workspace_rooms(
+    workspace_id: int,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+):
+    rooms = get_da_rooms_by_workspace(db=db, workspace_id=workspace_id)
+    return rooms
