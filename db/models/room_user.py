@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Enum
+from sqlalchemy import Column, Integer, String, ForeignKey, Enum, Boolean
 
 from enum import Enum as pyEnum
 
@@ -27,6 +27,7 @@ class RoomUser(Timestamp, Base):
     user = relationship("User")
     room_id = Column(Integer, ForeignKey("rooms.id"), primary_key=True)
     room = relationship("Room")
+    is_active = Column(Boolean, default=True)
     voice_status = Column(
         Enum(VoiceStatus), nullable=False, default=VoiceStatus.disconnected
     )
