@@ -144,8 +144,8 @@ def upgrade() -> None:
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('room_id', sa.Integer(), nullable=False),
     sa.Column('is_active', sa.Boolean(), nullable=True),
-    # sa.Column('voice_status', sa.Enum('disconnected', 'muted', 'unmuted', 'deafened', name='voicestatus'), nullable=False),
-    # sa.Column('video_status', sa.Enum('disconnected', 'camera', 'screen', name='videostatus'), nullable=False),
+    sa.Column('voice_status', sa.Enum('disconnected', 'muted', 'unmuted', 'deafened', name='voicestatus'), nullable=False),
+    sa.Column('video_status', sa.Enum('disconnected', 'camera', 'screen', name='videostatus'), nullable=False),
     sa.Column('coordinates', sa.String(length=31), nullable=False),
     sa.Column('screenshare_coordinates', sa.String(length=31), nullable=False),
     sa.Column('screenshare_size', sa.String(length=31), nullable=False),
@@ -157,14 +157,14 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('user_id', 'room_id')
     )
-    op.add_column(
-        'room_user',
-        sa.Column('voice_status', sa.Enum('disconnected', 'muted', 'unmuted', 'deafened', name='voicestatus'), nullable=False)
-    )
-    op.add_column(
-        'room_user',
-        sa.Column('video_status', sa.Enum('disconnected', 'camera', 'screen', name='videostatus'), nullable=False)
-    )
+    # op.add_column(
+    #     'room_user',
+    #     sa.Column('voice_status', sa.Enum('disconnected', 'muted', 'unmuted', 'deafened', name='voicestatus'), nullable=False)
+    # )
+    # op.add_column(
+    #     'room_user',
+    #     sa.Column('video_status', sa.Enum('disconnected', 'camera', 'screen', name='videostatus'), nullable=False)
+    # )
     # ### end Alembic commands ###
 
 
