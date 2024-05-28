@@ -27,8 +27,18 @@ async def create_room(
 
 
 @router.get("/room/{room_id}", response_model=Room)
-async def get_room_by_id():
-    pass
+async def get_room_by_id(
+    room_id: int,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+):
+    db_room = get_da_room_by_id(db=db, room_id=room_id)
+    if db_room is None:
+        raise HTTPException(
+            status_code=404, detail=f"Room (id = {room_id}) not found!"
+        )
+    return db_room
+
 
 @router.put("/room/{room_id}", response_model=Room, status_code=200)
 async def update_room():
