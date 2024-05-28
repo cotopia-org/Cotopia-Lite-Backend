@@ -21,8 +21,18 @@ def get_da_room_by_id(db: Session, room_id: int):
 def get_da_rooms_by_workspace(db: Session, workspace_id: int):
     return db.query(RoomModel).filter(RoomModel.workspace_id == workspace_id).all()
 
-def edit_da_room():
-    pass
+def edit_da_room(db: Session, room_id: int, room: RoomUpdate):
+    db_room = db.query(RoomModel).get(room_id)
+    db_room.updated_at = datetime.datetime.now(datetime.timezone.utc)
+
+    for var, value in vars(room).items():
+        if value:
+            setattr(db_room, var, value)
+
+    db.add(db_room)
+    db.commit()
+    return db_room
+
 
 def delete_da_room():
     pass
