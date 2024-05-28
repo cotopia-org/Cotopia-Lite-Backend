@@ -63,5 +63,20 @@ async def update_room(
 
 
 @router.delete("/room/{room_id}", status_code=204)
-async def delete_room():
-    pass
+async def delete_room(
+    room_id: int,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+):
+    db_room = get_da_room_by_id(db=db, room_id=room_id)
+    if db_room is None:
+        raise HTTPException(
+            status_code=404, detail=f"Room (id = {room_id}) not found!"
+        )
+    else:
+        if True: # check permission
+            delete_da_room(db=db, room_id=room_id)
+        else:
+            raise HTTPException(
+                status_code=403, detail="You do not have permission to perform this action!"
+            )
