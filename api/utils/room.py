@@ -18,8 +18,8 @@ def create_da_room(db: Session, room: RoomCreate, workspace_id: int):
 def get_da_room_by_id(db: Session, room_id: int):
     return db.query(RoomModel).filter(RoomModel.id == room_id).first()
 
-def get_da_rooms_by_workspace():
-    pass
+def get_da_rooms_by_workspace(db: Session, workspace_id: int):
+    return db.query(RoomModel).filter(RoomModel.workspace_id == workspace_id).all()
 
 def edit_da_room():
     pass
