@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 9b9cc0c2e50c
-Revises: 9e84d71e36cb
-Create Date: 2024-05-25 13:15:54.834257
+Revision ID: 826d4f9395c3
+Revises: 
+Create Date: 2024-05-28 20:32:11.029278
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '9b9cc0c2e50c'
-down_revision: Union[str, None] = '9e84d71e36cb'
+revision: str = '826d4f9395c3'
+down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -48,6 +48,23 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_roles_id'), 'roles', ['id'], unique=False)
+    op.create_table('users',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('username', sa.String(length=100), nullable=False),
+    sa.Column('hashed_password', sa.String(length=511), nullable=True),
+    sa.Column('is_active', sa.Boolean(), nullable=True),
+    sa.Column('first_name', sa.String(length=50), nullable=True),
+    sa.Column('last_name', sa.String(length=50), nullable=True),
+    sa.Column('email', sa.String(length=63), nullable=True),
+    sa.Column('status', sa.String(length=31), nullable=True),
+    sa.Column('avatar', sa.String(length=255), nullable=True),
+    sa.Column('bio', sa.String(length=255), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_users_id'), 'users', ['id'], unique=False)
+    op.create_index(op.f('ix_users_username'), 'users', ['username'], unique=True)
     op.create_table('permission_role',
     sa.Column('permission_id', sa.Integer(), nullable=False),
     sa.Column('role_id', sa.Integer(), nullable=False),
@@ -126,8 +143,9 @@ def upgrade() -> None:
     op.create_table('room_user',
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('room_id', sa.Integer(), nullable=False),
-    sa.Column('voice_status', sa.Enum('disconnected', 'muted', 'unmuted', 'deafened', name='voicestatus'), nullable=False),
-    sa.Column('video_status', sa.Enum('disconnected', 'camera', 'screen', name='videostatus'), nullable=False),
+    sa.Column('is_active', sa.Boolean(), nullable=True),
+    # sa.Column('voice_status', sa.Enum('disconnected', 'muted', 'unmuted', 'deafened', name='voicestatus'), nullable=False),
+    # sa.Column('video_status', sa.Enum('disconnected', 'camera', 'screen', name='videostatus'), nullable=False),
     sa.Column('coordinates', sa.String(length=31), nullable=False),
     sa.Column('screenshare_coordinates', sa.String(length=31), nullable=False),
     sa.Column('screenshare_size', sa.String(length=31), nullable=False),
@@ -138,6 +156,14 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['room_id'], ['rooms.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('user_id', 'room_id')
+    )
+    op.add_column(
+        'room_user',
+        sa.Column('voice_status', sa.Enum('disconnected', 'muted', 'unmuted', 'deafened', name='voicestatus'), nullable=False)
+    )
+    op.add_column(
+        'room_user',
+        sa.Column('video_status', sa.Enum('disconnected', 'camera', 'screen', name='videostatus'), nullable=False)
     )
     # ### end Alembic commands ###
 
@@ -156,6 +182,9 @@ def downgrade() -> None:
     op.drop_table('workspaces')
     op.drop_table('role_user')
     op.drop_table('permission_role')
+    op.drop_index(op.f('ix_users_username'), table_name='users')
+    op.drop_index(op.f('ix_users_id'), table_name='users')
+    op.drop_table('users')
     op.drop_index(op.f('ix_roles_id'), table_name='roles')
     op.drop_table('roles')
     op.drop_index(op.f('ix_permissions_id'), table_name='permissions')
