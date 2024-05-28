@@ -48,8 +48,6 @@ def deactivate_ru(db: Session, room_id: int, user_id: int):
 
 def delete_ru(db: Session, room_id: int, user_id: int):
     db_room_user = db.query(RoomUserModel).get({"room_id": room_id, "user_id": user_id})
-    db_room_user.updated_at = datetime.datetime.now(datetime.timezone.utc)
-    db_room_user.is_active = False
 
     db.delete(db_room_user)
     db.commit()
