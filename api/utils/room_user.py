@@ -15,8 +15,8 @@ def create_ru(db: Session, room_user: RoomUserCreate, room_id: int, user_id: int
     return db_room_user
 
 
-def get_ru():
-    pass
+def get_ru(db: Session, room_id: int, user_id: int):
+    return db.query(RoomUserModel).filter(RoomUserModel.room_id == room_id, RoomUserModel.user_id == user_id).first()
 
 
 def edit_ru():
@@ -25,4 +25,3 @@ def edit_ru():
 
 def delete_ru():
     pass
-
