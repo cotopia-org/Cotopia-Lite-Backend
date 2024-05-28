@@ -4,7 +4,12 @@ import fastapi
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from api.utils.room import create_da_room, get_da_room_by_id, edit_da_room, delete_da_room
+from api.utils.room import (
+    create_da_room,
+    get_da_room_by_id,
+    edit_da_room,
+    delete_da_room,
+)
 
 from auth import get_current_active_user
 from db.db_setup import get_db
@@ -34,9 +39,7 @@ async def get_room_by_id(
 ):
     db_room = get_da_room_by_id(db=db, room_id=room_id)
     if db_room is None:
-        raise HTTPException(
-            status_code=404, detail=f"Room (id = {room_id}) not found!"
-        )
+        raise HTTPException(status_code=404, detail=f"Room (id = {room_id}) not found!")
     return db_room
 
 
@@ -49,17 +52,15 @@ async def update_room(
 ):
     db_room = get_da_room_by_id(db=db, room_id=room_id)
     if db_room is None:
-        raise HTTPException(
-            status_code=404, detail=f"Room (id = {room_id}) not found!"
-        )
+        raise HTTPException(status_code=404, detail=f"Room (id = {room_id}) not found!")
     else:
-        if True: # check permission
+        if True:  # check permission
             return edit_da_room(db=db, room_id=room_id, room=room)
         else:
             raise HTTPException(
-                status_code=403, detail="You do not have permission to perform this action!"
+                status_code=403,
+                detail="You do not have permission to perform this action!",
             )
-
 
 
 @router.delete("/room/{room_id}", status_code=204)
@@ -70,13 +71,12 @@ async def delete_room(
 ):
     db_room = get_da_room_by_id(db=db, room_id=room_id)
     if db_room is None:
-        raise HTTPException(
-            status_code=404, detail=f"Room (id = {room_id}) not found!"
-        )
+        raise HTTPException(status_code=404, detail=f"Room (id = {room_id}) not found!")
     else:
-        if True: # check permission
+        if True:  # check permission
             delete_da_room(db=db, room_id=room_id)
         else:
             raise HTTPException(
-                status_code=403, detail="You do not have permission to perform this action!"
+                status_code=403,
+                detail="You do not have permission to perform this action!",
             )
