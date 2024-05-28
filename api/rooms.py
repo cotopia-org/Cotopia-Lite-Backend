@@ -41,8 +41,25 @@ async def get_room_by_id(
 
 
 @router.put("/room/{room_id}", response_model=Room, status_code=200)
-async def update_room():
-    pass
+async def update_room(
+    room_id: int,
+    room: RoomUpdate,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+):
+    db_room = get_da_room_by_id(db=db, room_id=room_id)
+    if db_room is None:
+        raise HTTPException(
+            status_code=404, detail=f"Room (id = {room_id}) not found!"
+        )
+    else:
+        if True: # check permission
+            return edit_da_room(db=db, room_id=room_id, room=room)
+        else:
+            raise HTTPException(
+                status_code=403, detail="You do not have permission to perform this action!"
+            )
+
 
 
 @router.delete("/room/{room_id}", status_code=204)
