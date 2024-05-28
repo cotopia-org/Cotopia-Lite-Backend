@@ -17,8 +17,14 @@ router = fastapi.APIRouter()
 
 
 @router.post("/room", response_model=Room, status_code=201)
-async def create_room():
-    pass
+async def create_room(
+    room: RoomCreate,
+    workspace_id: int,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+):
+    return create_da_room(db=db, room=room, workspace_id=workspace_id)
+
 
 @router.get("/room/{room_id}", response_model=Room)
 async def get_room_by_id():
