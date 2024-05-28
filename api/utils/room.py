@@ -4,7 +4,6 @@ import datetime
 from schemas.room import RoomCreate, RoomUpdate
 
 
-
 def create_da_room(db: Session, room: RoomCreate, workspace_id: int):
     db_room = RoomModel(workspace_id=workspace_id)
     for var, value in vars(room).items():
@@ -15,11 +14,14 @@ def create_da_room(db: Session, room: RoomCreate, workspace_id: int):
     db.refresh(db_room)
     return db_room
 
+
 def get_da_room_by_id(db: Session, room_id: int):
     return db.query(RoomModel).filter(RoomModel.id == room_id).first()
 
+
 def get_da_rooms_by_workspace(db: Session, workspace_id: int):
     return db.query(RoomModel).filter(RoomModel.workspace_id == workspace_id).all()
+
 
 def edit_da_room(db: Session, room_id: int, room: RoomUpdate):
     db_room = db.query(RoomModel).get(room_id)
