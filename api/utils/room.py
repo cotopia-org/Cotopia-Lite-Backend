@@ -34,5 +34,11 @@ def edit_da_room(db: Session, room_id: int, room: RoomUpdate):
     return db_room
 
 
-def delete_da_room():
-    pass
+def delete_da_room(db: Session, room_id: int):
+    db_room = db.query(RoomModel).get(room_id)
+    db_room.updated_at = datetime.datetime.now(datetime.timezone.utc)
+    db_room.is_active = False
+
+    db.add(db_room)
+    db.commit()
+    return db_room
