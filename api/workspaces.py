@@ -78,3 +78,7 @@ async def delete_workspace(
             raise HTTPException(
                 status_code=403, detail="You are not the creator of this workspace!"
             )
+
+
+# TO-DO
+# GET /workspace/{workspace_id}/rooms
