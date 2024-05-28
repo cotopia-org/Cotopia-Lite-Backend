@@ -10,7 +10,7 @@ from passlib.context import CryptContext
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from api.utils import users as crud
+from api.utils import user as crud
 from common.http_exceptions import UNAUTHENTICATED, UNAUTHORIZED
 from db.db_setup import get_db
 from schemas import user as schemas

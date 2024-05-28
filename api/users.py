@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from livekit import api
 from sqlalchemy.orm import Session
 
-from api.utils.users import (
+from api.utils.user import (
     create_user,
     edit_user,
     get_user,
