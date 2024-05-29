@@ -9,12 +9,20 @@ from auth import get_current_active_user
 from db.db_setup import get_db
 
 from schemas.user import User
-from schemas.room_user import RoomUserCreate, RoomUserUpdate
+from schemas.room_user import RoomUserCreate, RoomUserUpdate, RoomUser
 
 
 router = fastapi.APIRouter()
 
-# Joining the room
+
+@router.post("/join_room", response_model=RoomUser, status_code=201)
+async def join_room(
+    room_user: RoomUserCreate,
+    room_id: int,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+):
+    return create_ru(db=db, room_user=room_user, room_id=room_id, user_id=current_user.id)
 
 # Leaving the room
 
