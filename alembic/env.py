@@ -9,7 +9,7 @@ from os import getenv
 from dotenv import load_dotenv
 from db.db_setup import Base
 from db.models import file, message, permission, role, room, setting, user, workspace # noqa: F401
-from db.models import permission_role, role_user, room_user # noqa: F401
+from db.models import permission_role, room_user, user_workspace # noqa: F401
 
 
 
