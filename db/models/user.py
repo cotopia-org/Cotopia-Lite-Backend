@@ -1,9 +1,6 @@
 from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.orm import relationship
 
-from db.models.message import Message  # noqa: F401
-from db.models.workspace import Workspace  # noqa: F401
-
 from ..db_setup import Base
 from .mixins import Timestamp
 

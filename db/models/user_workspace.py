@@ -1,10 +1,6 @@
 from sqlalchemy import Column, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
-from db.models.role import Role  # noqa: F401
-from db.models.room import Room  # noqa: F401
-from db.models.user import User  # noqa: F401
-
 from ..db_setup import Base
 from .mixins import Timestamp
 

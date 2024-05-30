@@ -1,11 +1,10 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from db.models.message import Message  # noqa: F401
-
 # from .room_user import RoomUser
 from ..db_setup import Base
 from .mixins import Timestamp
+
 
 class Room(Timestamp, Base):
     __tablename__ = "rooms"
