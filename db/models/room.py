@@ -18,5 +18,6 @@ class Room(Timestamp, Base):
     status = Column(String(31), nullable=True)
     avatar = Column(String(255), nullable=True)
     background_image = Column(String(255), nullable=True)
+    landing_spot = Column(String(31), nullable=True, default="0, 0")
     messages = relationship("Message")
 
