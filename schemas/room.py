@@ -13,9 +13,10 @@ class RoomUpdate(RoomCreate):
     title: str | None = None
     status: str | None = None
     is_locked: bool | None = None
-    passcode :str | None = None
+    passcode: str | None = None
     avatar: str | None = None
     background_image: str | None = None
+    landing_spot: str | None = None
 
 class Room(RoomUpdate):
     id: int
