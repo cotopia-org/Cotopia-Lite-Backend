@@ -110,3 +110,15 @@ async def room_status(room_id: int, websocket: WebSocket, room_user: RoomUserUpd
             time.sleep(10)
     except WebSocketDisconnect:
         manager.disconnect(websocket)
+
+
+@router.websocket("/test")
+async def test(websocket: WebSocket):
+    await manager.connect(websocket)
+    try:
+        while True:
+            data = await websocket.receive_json()
+            await manager.broadcast(data)
+            time.sleep(10)
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
