@@ -20,6 +20,7 @@ from api.utils.auth import (
     create_access_token,
     get_current_active_user,
 )
+from api.utils.auth import get_user as get_user_by_username
 from common.http_exceptions import MISSMATCHAUTH
 from db.db_setup import get_db
 from schemas.user import User, UserCreate, UserUpdate
@@ -45,7 +46,7 @@ async def login(
 
 @router.post("/auth/register", response_model=User, status_code=201)
 async def register_user(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = get_user_by_email(db=db, email=user.email)
+    db_user = get_user_by_username(db=db, username=user.username)
     if db_user:
-        raise HTTPException(status_code=400, detail="Email is already registered")
+        raise HTTPException(status_code=400, detail="Username is already registered")
     return create_user(db=db, user=user)

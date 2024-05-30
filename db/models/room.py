@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 
 from db.models.message import Message  # noqa: F401
 
-from .room_user import RoomUser
+# from .room_user import RoomUser
 from ..db_setup import Base
 from .mixins import Timestamp
 
@@ -21,4 +21,4 @@ class Room(Timestamp, Base):
     background_image = Column(String(255), nullable=True)
     landing_spot = Column(String(31), nullable=True, default="0, 0")
     messages = relationship("Message")
-    users = relationship('Room', secondary=RoomUser, backref='Item')
+    # users = relationship('Room', secondary=RoomUser, backref='Item')

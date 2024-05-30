@@ -20,7 +20,6 @@ class UserUpdate(UserCreate):
 class User(UserUpdate):
     id: int
     is_active: bool
-    role: int
     created_at: datetime
     updated_at: datetime
 
