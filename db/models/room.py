@@ -5,7 +5,6 @@ from .mixins import Timestamp
 from sqlalchemy.orm import relationship
 
 
-
 class Room(Timestamp, Base):
     __tablename__ = "rooms"
 
@@ -20,4 +19,4 @@ class Room(Timestamp, Base):
     background_image = Column(String(255), nullable=True)
     landing_spot = Column(String(31), nullable=True, default="0, 0")
     messages = relationship("Message")
-
+    users = relationship('Room', secondary=RoomUser, backref='Item')
