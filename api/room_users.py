@@ -16,7 +16,7 @@ from schemas.room_user import RoomUserCreate, RoomUserUpdate, RoomUser
 router = fastapi.APIRouter()
 
 
-@router.post("/join_room", response_model=RoomUser, status_code=201)
+@router.post("/room/{room_id}/join", response_model=RoomUser, status_code=201)
 async def join_room(
     room_user: RoomUserCreate,
     room_id: int,
@@ -26,7 +26,7 @@ async def join_room(
     return create_ru(db=db, room_user=room_user, room_id=room_id, user_id=current_user.id)
 
 
-@router.delete("/leave_room", status_code=204)
+@router.delete("/room/{room_id}/leave", status_code=204)
 async def delete_room(
     room_id: int,
     current_user: Annotated[User, Depends(get_current_active_user)],
