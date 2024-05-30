@@ -1,11 +1,13 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Enum, Boolean
-
 from enum import Enum as pyEnum
 
+from sqlalchemy import Boolean, Column, Enum, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
+
+from db.models.room import Room  # noqa: F401
+from db.models.user import User  # noqa: F401
 
 from ..db_setup import Base
 from .mixins import Timestamp
-from sqlalchemy.orm import relationship
 
 
 class VoiceStatus(pyEnum):

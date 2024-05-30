@@ -1,9 +1,11 @@
-from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy import Column, ForeignKey, Integer
+from sqlalchemy.orm import relationship
 
+from db.models.permission import Permission  # noqa: F401
+from db.models.role import Role  # noqa: F401
 
 from ..db_setup import Base
 from .mixins import Timestamp
-from sqlalchemy.orm import relationship
 
 
 class PermissionRole(Timestamp, Base):

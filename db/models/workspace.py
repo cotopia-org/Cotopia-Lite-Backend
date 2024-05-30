@@ -1,8 +1,11 @@
-from sqlalchemy import Boolean, Column, Integer, String, ForeignKey
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
+
+from db.models.room import Room  # noqa: F401
+from db.models.setting import Setting  # noqa: F401
 
 from ..db_setup import Base
 from .mixins import Timestamp
-from sqlalchemy.orm import relationship
 
 
 class Workspace(Timestamp, Base):

@@ -1,9 +1,10 @@
-from sqlalchemy import Boolean, Column, Integer, String, ForeignKey
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
+
+from db.models.message import Message  # noqa: F401
 
 from ..db_setup import Base
 from .mixins import Timestamp
-from sqlalchemy.orm import relationship
-
 
 
 class Room(Timestamp, Base):
@@ -20,4 +21,3 @@ class Room(Timestamp, Base):
     background_image = Column(String(255), nullable=True)
     landing_spot = Column(String(31), nullable=True, default="0, 0")
     messages = relationship("Message")
-
