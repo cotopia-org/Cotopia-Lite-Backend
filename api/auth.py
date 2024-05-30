@@ -13,7 +13,7 @@ from api.utils.user import (
     get_user_by_email,
     get_users,
 )
-from utils.auth import (
+from api.utils.auth import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     Token,
     authenticate_user,

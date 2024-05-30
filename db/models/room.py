@@ -1,5 +1,6 @@
 from sqlalchemy import Boolean, Column, Integer, String, ForeignKey
 
+from .room_user import RoomUser
 from ..db_setup import Base
 from .mixins import Timestamp
 from sqlalchemy.orm import relationship

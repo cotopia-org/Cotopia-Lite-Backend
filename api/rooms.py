@@ -11,31 +11,30 @@ from api.utils.room import (
     delete_da_room,
 )
 
-from auth import get_current_active_user
+from api.utils.auth import get_current_active_user
 from db.db_setup import get_db
 
 from schemas.user import User
 from schemas.room import Room, RoomCreate, RoomUpdate
-
 
 router = fastapi.APIRouter()
 
 
 @router.post("/room", response_model=Room, status_code=201)
 async def create_room(
-    room: RoomCreate,
-    workspace_id: int,
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
+        room: RoomCreate,
+        workspace_id: int,
+        current_user: Annotated[User, Depends(get_current_active_user)],
+        db: Session = Depends(get_db),
 ):
     return create_da_room(db=db, room=room, workspace_id=workspace_id)
 
 
 @router.get("/room/{room_id}", response_model=Room)
 async def get_room_by_id(
-    room_id: int,
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
+        room_id: int,
+        current_user: Annotated[User, Depends(get_current_active_user)],
+        db: Session = Depends(get_db),
 ):
     db_room = get_da_room_by_id(db=db, room_id=room_id)
     if db_room is None:
@@ -45,10 +44,10 @@ async def get_room_by_id(
 
 @router.put("/room/{room_id}", response_model=Room, status_code=200)
 async def update_room(
-    room_id: int,
-    room: RoomUpdate,
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
+        room_id: int,
+        room: RoomUpdate,
+        current_user: Annotated[User, Depends(get_current_active_user)],
+        db: Session = Depends(get_db),
 ):
     db_room = get_da_room_by_id(db=db, room_id=room_id)
     if db_room is None:
@@ -65,9 +64,9 @@ async def update_room(
 
 @router.delete("/room/{room_id}", status_code=204)
 async def delete_room(
-    room_id: int,
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
+        room_id: int,
+        current_user: Annotated[User, Depends(get_current_active_user)],
+        db: Session = Depends(get_db),
 ):
     db_room = get_da_room_by_id(db=db, room_id=room_id)
     if db_room is None:
