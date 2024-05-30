@@ -45,6 +45,28 @@ async def delete_room(
             )
 
 
+@router.put("/room/{room_id}/updateStatus", response_model=RoomUser, status_code=200)
+async def update_ru(
+    room_id: int,
+    room_user: RoomUserUpdate,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+):
+    # TO-DO
+    # Change status of others based on role
+    db_room_user = get_ru(db=db, room_id=room_id, user_id=current_user.id)
+    if db_room_user is None:
+        raise HTTPException(status_code=404, detail=f"RoomUser (room_id = {room_id}, user_id = {current_user.id}) not found!")
+    else:
+        if True:  # check permission
+            return edit_ru(db=db, room_id=room_id, user_id=current_user.id, room_user=room_user)
+        else:
+            raise HTTPException(
+                status_code=403,
+                detail="You do not have permission to perform this action!",
+            )
+
+
 
 #  Room users status
 
