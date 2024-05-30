@@ -101,7 +101,7 @@ manager = ConnectionManager()
 
 
 @router.websocket("/room_status/{room_id}")
-async def room_status(room_id: int, websocket: WebSocket):
+async def room_status(room_id: int, websocket: WebSocket, room_user: RoomUserUpdate):
     await manager.connect(websocket)
     try:
         while True:
@@ -110,3 +110,5 @@ async def room_status(room_id: int, websocket: WebSocket):
             time.sleep(10)
     except WebSocketDisconnect:
         manager.disconnect(websocket)
+
+
