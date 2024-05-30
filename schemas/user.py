@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 
 class UserBase(BaseModel):
-    email: str
+    username: str
 
 
 class UserCreate(UserBase):
@@ -14,6 +14,7 @@ class UserUpdate(UserCreate):
     password: str | None = None
     first_name: str | None = None
     last_name: str | None = None
+    email: str | None = None
 
 
 class User(UserUpdate):
