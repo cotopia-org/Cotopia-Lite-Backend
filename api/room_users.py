@@ -6,7 +6,7 @@ from fastapi import Depends, HTTPException, WebSocket, WebSocketDisconnect
 from sqlalchemy.orm import Session
 
 from api.utils.room_user import create_ru, delete_ru, edit_ru, get_ru
-from auth import get_current_active_user
+from api.utils.auth import get_current_active_user
 from db.db_setup import get_db
 from schemas.room_user import RoomUser, RoomUserCreate, RoomUserUpdate
 from schemas.user import User
@@ -16,10 +16,10 @@ router = fastapi.APIRouter()
 
 @router.post("/room/{room_id}/join", response_model=RoomUser, status_code=201)
 async def join_room(
-    room_user: RoomUserCreate,
-    room_id: int,
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
+        room_user: RoomUserCreate,
+        room_id: int,
+        current_user: Annotated[User, Depends(get_current_active_user)],
+        db: Session = Depends(get_db),
 ):
     return create_ru(
         db=db, room_user=room_user, room_id=room_id, user_id=current_user.id
@@ -28,9 +28,9 @@ async def join_room(
 
 @router.delete("/room/{room_id}/leave", status_code=204)
 async def delete_room(
-    room_id: int,
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
+        room_id: int,
+        current_user: Annotated[User, Depends(get_current_active_user)],
+        db: Session = Depends(get_db),
 ):
     db_room_user = get_ru(db=db, room_id=room_id, user_id=current_user.id)
     if db_room_user is None:
@@ -50,10 +50,10 @@ async def delete_room(
 
 @router.put("/room/{room_id}/updateStatus", response_model=RoomUser, status_code=200)
 async def update_ru(
-    room_id: int,
-    room_user: RoomUserUpdate,
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
+        room_id: int,
+        room_user: RoomUserUpdate,
+        current_user: Annotated[User, Depends(get_current_active_user)],
+        db: Session = Depends(get_db),
 ):
     # TO-DO
     # Change status of others based on role
@@ -110,5 +110,3 @@ async def room_status(room_id: int, websocket: WebSocket, room_user: RoomUserUpd
             time.sleep(10)
     except WebSocketDisconnect:
         manager.disconnect(websocket)
-
-

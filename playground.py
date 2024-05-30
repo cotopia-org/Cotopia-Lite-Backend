@@ -3,11 +3,16 @@ import logging
 from signal import SIGINT, SIGTERM
 from typing import Union
 import os
+from os import getenv
+
 
 from livekit import api, rtc
+from dotenv import load_dotenv
 
 # ensure LIVEKIT_URL, LIVEKIT_API_KEY, and LIVEKIT_API_SECRET are set
 
+load_dotenv()
+getenv("LIVEKIT_API_KEY")
 
 async def main(room: rtc.Room) -> None:
     @room.on("participant_connected")
@@ -137,6 +142,7 @@ async def main(room: rtc.Room) -> None:
         )
         .to_jwt()
     )
+    print(token)
     await room.connect(os.getenv("LIVEKIT_API_URL"), token)
     logging.info("connected to room %s", room.name)
     logging.info("participants: %s", room.participants)

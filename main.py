@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api import users, workspaces, rooms, room_users
+from api import users, workspaces, rooms, room_users, auth
 from db.db_setup import engine
 from db.models import user
 
@@ -35,6 +35,7 @@ app.add_middleware(
 )
 
 app.include_router(users.router)
+app.include_router(auth.router)
 app.include_router(workspaces.router)
 app.include_router(rooms.router)
 app.include_router(room_users.router)
