@@ -23,6 +23,11 @@ def get_ru(db: Session, room_id: int, user_id: int):
     )
 
 
+def get_ru_of_room(db: Session, room_id: int, skip: int = 0, limit: int = 100):
+    q = db.query(RoomUserModel).filter(RoomUserModel.room_id == room_id)
+    return q.offset(skip).limit(limit).all()
+
+
 def edit_ru(db: Session, room_id: int, user_id: int, room_user: RoomUserUpdate):
     db_room_user = db.query(RoomUserModel).get({"room_id": room_id, "user_id": user_id})
     db_room_user.updated_at = datetime.datetime.now(datetime.timezone.utc)
