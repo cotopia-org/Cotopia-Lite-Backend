@@ -23,7 +23,7 @@ def get_ru(db: Session, room_id: int, user_id: int):
     )
 
 
-def get_ru_of_room(db: Session, room_id: int, skip: int = 0, limit: int = 100):
+def get_rus_of_room(db: Session, room_id: int, skip: int = 0, limit: int = 100):
     q = db.query(RoomUserModel).filter(RoomUserModel.room_id == room_id)
     return q.offset(skip).limit(limit).all()
 
