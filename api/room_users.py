@@ -92,9 +92,14 @@ class ConnectionManager:
     async def send_personal_message(self, message: str, websocket: WebSocket):
         await websocket.send_text(message)
 
-    async def broadcast(self, message: str):
+    async def broadcast(self, message: str, room_id: int):
         for connection in self.active_connections:
-            await connection.send_text(message)
+            #  check if the message is
+            # if so
+            # update db and broadcast
+            ru = message
+            edit_ru(db=get_db(), room_id=room_id, user_id=ru.user_id, ru=message)
+            await connection.send_json(message)
 
 
 manager = ConnectionManager()
@@ -104,13 +109,11 @@ manager = ConnectionManager()
 async def room_status(
     room_id: int,
     websocket: WebSocket,
-    # db: Session = Depends(get_db),
 ):
     await manager.connect(websocket)
     try:
         while True:
-            data = await websocket.receive_text()
-            await manager.broadcast(data)
-            time.sleep(1)
+            data = await websocket.receive_json()
+            await manager.broadcast(message=data, room_id=room_id)
     except WebSocketDisconnect:
         manager.disconnect(websocket)
