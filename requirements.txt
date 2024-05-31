@@ -32,7 +32,7 @@ multidict==6.0.5
 orjson==3.10.3
 passlib==1.7.4
 protobuf==5.26.1
-psycopg2==2.9.9
+psycopg2-binary
 pyasn1==0.6.0
 pydantic==2.7.1
 pydantic_core==2.18.2
