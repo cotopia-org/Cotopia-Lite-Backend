@@ -94,7 +94,7 @@ class ConnectionManager:
 
     async def broadcast(self, message: str):
         for connection in self.active_connections:
-            await connection.send_json(message)
+            await connection.send_text(message)
 
 
 manager = ConnectionManager()
@@ -103,7 +103,7 @@ manager = ConnectionManager()
 @router.websocket("/room_status/{room_id}")
 async def room_status(
     room_id: int,
-    # current_user: Annotated[User, Depends(get_current_active_user)],
+    current_user: Annotated[User, Depends(get_current_active_user)],
     websocket: WebSocket,
     db: Session = Depends(get_db),
 ):
@@ -115,15 +115,25 @@ async def room_status(
                 RoomUserUpdate.model_validate(data)
                 try:
                     ruu = RoomUserUpdate(user_id=1, room_id=room_id)
-                    for var, value in vars(data).items():
-                        if value:
-                            setattr(ruu, var, value)
+                    for i in data:
+                        if i == "user_id" or i == "room_id":
+                            pass
+                        else:
+                            setattr(ruu, i, data[i])
                 except Exception as e:
                     await manager.send_personal_message(
                         message=str(e), websocket=websocket
                     )
+                    return
             except ValidationError as ve:
                 await manager.send_personal_message(message=str(ve), websocket=websocket)
-            # await manager.broadcast(data)
+                return
+            
+            print("validation done!")
+            # TO-DO
+            # get room_id and user_id from data and check permission
+            updated = edit_ru(db=db, room_id=room_id, user_id=current_user.id, room_user=ruu)
+            await manager.broadcast(updated)
+            
     except WebSocketDisconnect:
         manager.disconnect(websocket)
