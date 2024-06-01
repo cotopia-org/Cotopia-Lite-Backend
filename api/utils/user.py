@@ -2,7 +2,7 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from common.http_exceptions import PASS_NOTACCEPTABLE
-from db.models.user import User as UserModel
+from db.models import User as UserModel
 from schemas.user import UserCreate, UserUpdate
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -14,6 +14,10 @@ def get_user(db: Session, user_id: int):
 
 def get_user_by_email(db: Session, email: str):
     return db.query(UserModel).filter(UserModel.email == email).first()
+
+
+def get_user_by_username(db: Session, username: str):
+    return db.query(UserModel).filter(UserModel.username == username).first()
 
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
@@ -29,8 +33,8 @@ def get_password_hash(password):
 def create_user(db: Session, user: UserCreate):
     if len(user.password) < 8:
         raise PASS_NOTACCEPTABLE
-    hashed_password = get_password_hash(user.password)
-    db_user = UserModel(username=user.username, hashed_password=hashed_password)
+    password = get_password_hash(user.password)
+    db_user = UserModel(username=user.username, password=password)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -48,8 +52,8 @@ def edit_user(db: Session, user_id: int, user: UserUpdate):
     if getattr(user, "password", None):
         if len(user.password) < 8:
             raise PASS_NOTACCEPTABLE
-        hashed_password = get_password_hash(user.password)
-        db_user.hashed_password = hashed_password
+        password = get_password_hash(user.password)
+        db_user.password = password
 
     db.add(db_user)
     db.commit()

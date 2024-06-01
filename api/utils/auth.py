@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 from os import getenv
-from dotenv import load_dotenv
 from typing import Annotated
 
+from dotenv import load_dotenv
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
@@ -46,14 +46,15 @@ def get_password_hash(password):
 
 
 def get_user(db, username: str):
-    return crud.get_user_by_email(db, username)
+    return crud.get_user_by_username(db, username)
 
 
 def authenticate_user(db, username: str, password: str):
     user = get_user(db, username)
+
     if not user:
         return False
-    if not verify_password(password, user.hashed_password):
+    if not verify_password(password, user.password):
         return False
     return user
 
@@ -70,7 +71,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 
 
 async def get_current_user_or_none(
-    token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)
+        token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)
 ):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -87,7 +88,7 @@ async def get_current_user_or_none(
 
 
 async def get_current_user(
-    token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)
+        token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)
 ):
     user = await get_current_user_or_none(token, db)
     if user is None:
@@ -96,13 +97,13 @@ async def get_current_user(
 
 
 async def get_current_active_user(
-    current_user: Annotated[schemas.User, Depends(get_current_user)]
+        current_user: Annotated[schemas.User, Depends(get_current_user)]
 ):
     return current_user
 
 
 async def get_current_active_admin(
-    current_user: Annotated[schemas.User, Depends(get_current_user)]
+        current_user: Annotated[schemas.User, Depends(get_current_user)]
 ):
     if "admin" not in current_user.roles:
         raise UNAUTHORIZED

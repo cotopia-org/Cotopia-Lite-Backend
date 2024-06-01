@@ -1,7 +1,9 @@
-from db.models.workspace import Workspace as WorkspaceModel
-from sqlalchemy.orm import Session
-from schemas.workspace import WorkspaceCreate, WorkspaceUpdate
 import datetime
+
+from sqlalchemy.orm import Session
+
+from db.models import Workspace as WorkspaceModel
+from schemas.workspace import WorkspaceCreate, WorkspaceUpdate
 
 
 def create_ws(db: Session, workspace: WorkspaceCreate, user_id: int):

@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from pydantic import BaseModel,ConfigDict
+from pydantic import BaseModel, ConfigDict
 
-from db.models.room_user import VoiceStatus, VideoStatus
+from db.models import VoiceStatus, VideoStatus
 
 
 class RoomUserBase(BaseModel):

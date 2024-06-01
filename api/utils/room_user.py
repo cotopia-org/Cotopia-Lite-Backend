@@ -1,6 +1,8 @@
-from db.models.room_user import RoomUser as RoomUserModel
-from sqlalchemy.orm import Session
 import datetime
+
+from sqlalchemy.orm import Session
+
+from db.models import RoomUser as RoomUserModel
 from schemas.room_user import RoomUserCreate, RoomUserUpdate
 
 

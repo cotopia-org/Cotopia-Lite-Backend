@@ -1,22 +1,22 @@
+from os import getenv
 from typing import Annotated, List
 
 import fastapi
+from dotenv import load_dotenv
 from fastapi import Depends, HTTPException
 from livekit import api
 from sqlalchemy.orm import Session
 
+from api.utils.auth import (
+    get_current_active_user,
+)
 from api.utils.user import (
     edit_user,
     get_user,
     get_users,
 )
-from api.auth import (
-    get_current_active_user,
-)
 from db.db_setup import get_db
-from schemas.user import User, UserCreate, UserUpdate
-from os import getenv
-from dotenv import load_dotenv
+from schemas.user import User, UserUpdate
 
 router = fastapi.APIRouter()
 

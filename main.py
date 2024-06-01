@@ -2,10 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api import users, workspaces, rooms, room_users, auth
-from db.db_setup import engine
-from db.models import user
+from db.db_setup import engine, Base
 
-user.Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Live Kit API",
