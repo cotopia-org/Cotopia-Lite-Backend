@@ -2,8 +2,23 @@ import datetime
 
 from sqlalchemy.orm import Session
 
+from db.models import UserWorkspace
 from db.models import Workspace as WorkspaceModel
 from schemas.workspace import WorkspaceCreate, WorkspaceUpdate
+
+
+def get_all_workspaces(db: Session, workspace_id: int):
+    return db.query(WorkspaceModel).all()
+
+
+def get_user_workspaces(db: Session, user_id: int):
+    user_workspaces = db.query(UserWorkspace).filter(UserWorkspace.user_id == user_id).all()
+    workspaces = []
+    for user_worksapce in user_workspaces:
+        workspaces.append(user_worksapce.workspace)
+
+    return workspaces
+    # return db.query(WorkspaceModel).all()
 
 
 def create_ws(db: Session, workspace: WorkspaceCreate, user_id: int):

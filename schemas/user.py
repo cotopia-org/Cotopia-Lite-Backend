@@ -16,9 +16,8 @@ class UserLogin(UserBase):
 
 
 class UserUpdate(UserCreate):
-    password: str | None = None
-    first_name: str | None = None
-    last_name: str | None = None
+    # password: str | None = None
+    name: str | None = None
     email: str | None = None
 
 

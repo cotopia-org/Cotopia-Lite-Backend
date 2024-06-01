@@ -9,9 +9,9 @@ from sqlalchemy.orm import relationship
 
 
 class Base(DeclarativeBase):
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, )
     created_at: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.now(timezone.utc), nullable=False)
-    updated_at: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.now(timezone.utc), nullable=False)
+    updated_at: Mapped[datetime.datetime] = mapped_column(nullable=True)
 
 
 class User(Base):
@@ -60,7 +60,7 @@ class UserWorkspace(Base):
     workspace_id: Mapped[int] = mapped_column(ForeignKey("workspaces.id"))
     workspace: Mapped["Workspace"] = relationship(back_populates="user_workspace")
 
-    role_id: Mapped[int] = mapped_column(ForeignKey("roles.id"))
+    role_id: Mapped[int] = mapped_column(ForeignKey("roles.id"), nullable=True)
     role: Mapped["Role"] = relationship(back_populates="user_workspace")
 
 
