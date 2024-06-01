@@ -1,15 +1,15 @@
-import time
 from typing import Annotated
 
 import fastapi
 from fastapi import Depends, HTTPException, WebSocket, WebSocketDisconnect
 from sqlalchemy.orm import Session
 
-from api.utils.room_user import create_ru, delete_ru, edit_ru, get_ru, get_rus_of_room
+from api.utils.room_user import create_ru, delete_ru, edit_ru, get_ru
 from api.utils.auth import get_current_active_user
 from db.db_setup import get_db
 from schemas.room_user import RoomUser, RoomUserCreate, RoomUserUpdate
 from schemas.user import User
+from pydantic import ValidationError
 
 router = fastapi.APIRouter()
 
@@ -92,13 +92,8 @@ class ConnectionManager:
     async def send_personal_message(self, message: str, websocket: WebSocket):
         await websocket.send_text(message)
 
-    async def broadcast(self, message: str, room_id: int):
+    async def broadcast(self, message: str):
         for connection in self.active_connections:
-            #  check if the message is
-            # if so
-            # update db and broadcast
-            ru = message
-            edit_ru(db=get_db(), room_id=room_id, user_id=ru.user_id, ru=message)
             await connection.send_json(message)
 
 
@@ -108,12 +103,27 @@ manager = ConnectionManager()
 @router.websocket("/room_status/{room_id}")
 async def room_status(
     room_id: int,
+    # current_user: Annotated[User, Depends(get_current_active_user)],
     websocket: WebSocket,
+    db: Session = Depends(get_db),
 ):
     await manager.connect(websocket)
     try:
         while True:
             data = await websocket.receive_json()
-            await manager.broadcast(message=data, room_id=room_id)
+            try:
+                RoomUserUpdate.model_validate(data)
+                try:
+                    ruu = RoomUserUpdate(user_id=1, room_id=room_id)
+                    for var, value in vars(data).items():
+                        if value:
+                            setattr(ruu, var, value)
+                except Exception as e:
+                    await manager.send_personal_message(
+                        message=str(e), websocket=websocket
+                    )
+            except ValidationError as ve:
+                await manager.send_personal_message(message=str(ve), websocket=websocket)
+            # await manager.broadcast(data)
     except WebSocketDisconnect:
         manager.disconnect(websocket)

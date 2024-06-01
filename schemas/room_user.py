@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel,ConfigDict
 
 from db.models.room_user import VoiceStatus, VideoStatus
 
@@ -17,6 +17,7 @@ class RoomUserCreate(RoomUserBase):
 
 
 class RoomUserUpdate(RoomUserCreate):
+    model_config = ConfigDict(validate_assignment=True)
     voice_status: VoiceStatus | None = None
     video_status: VideoStatus | None = None
     coordinates: str | None = None
