@@ -52,7 +52,7 @@ async def user_workspaces(
         current_user: Annotated[User, Depends(get_current_active_user)],
         db: Session = Depends(get_db),
 ):
-    return get_user_workspaces(db=db, user_id=current_user.id)
+    return get_user_workspaces(user=current_user)
 
 
 @router.get("/users/{user_id}", response_model=User)

@@ -1,4 +1,5 @@
 import datetime
+
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
@@ -32,8 +33,6 @@ def get_password_hash(password):
 
 
 def create_user(db: Session, user: UserCreate):
-    if len(user.password) < 8:
-        raise PASS_NOTACCEPTABLE
     password = get_password_hash(user.password)
     db_user = UserModel(username=user.username, password=password)
     db.add(db_user)

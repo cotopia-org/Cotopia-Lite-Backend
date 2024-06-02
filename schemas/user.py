@@ -15,7 +15,7 @@ class UserLogin(UserBase):
     password: str
 
 
-class UserUpdate(UserCreate):
+class UserUpdate(UserBase):
     # password: str | None = None
     name: str | None = None
     email: str | None = None

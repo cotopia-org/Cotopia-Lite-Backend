@@ -5,9 +5,11 @@ from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from api.utils.auth import get_current_active_user
+from api.utils.helpers import error
 from api.utils.room import get_da_rooms_by_workspace
 from api.utils.workspace import create_ws, get_ws_by_id, edit_ws, delete_ws
 from db.db_setup import get_db
+from db.models import UserWorkspace
 from schemas.room import Room
 from schemas.user import User
 from schemas.workspace import Workspace, WorkspaceCreate, WorkspaceUpdate
@@ -40,7 +42,6 @@ async def create_workspace(
 @router.get("/workspaces/{workspace_id}", response_model=Workspace)
 async def get_workspace_by_id(
         workspace_id: int,
-        current_user: Annotated[User, Depends(get_current_active_user)],
         db: Session = Depends(get_db),
 ):
     db_workspace = get_ws_by_id(db=db, workspace_id=workspace_id)
@@ -100,3 +101,37 @@ async def get_workspace_rooms(
 ):
     rooms = get_da_rooms_by_workspace(db=db, workspace_id=workspace_id)
     return rooms
+
+
+@router.get("/workspaces/{workspace_id}/join", response_model=Workspace)
+async def join_workspace_by_id(
+        workspace_id: int,
+        user: Annotated[User, Depends(get_current_active_user)],
+        db: Session = Depends(get_db),
+):
+    workspace = get_ws_by_id(db=db, workspace_id=workspace_id)
+
+    user_workspace = db.query(UserWorkspace).filter(UserWorkspace.workspace_id == workspace_id,
+                                                    UserWorkspace.user_id == user.id).first()
+    print(user_workspace)
+    if user_workspace is None:
+        user_workspace = UserWorkspace(user_id=user.id, workspace_id=workspace.id)
+
+        db.add(user_workspace)
+        db.commit()
+        return workspace
+
+    return error('You are already in this workspace')
+
+
+@router.get("/workspaces/{workspace_id}/users", response_model=List[User])
+async def get_workspace_rooms(
+        workspace_id: int,
+        db: Session = Depends(get_db),
+):
+    users = []
+    workspace = get_ws_by_id(db=db, workspace_id=workspace_id)
+    for user_workspace in workspace.user_workspace:
+        users.append(user_workspace.user)
+
+    return users
