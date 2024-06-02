@@ -113,7 +113,6 @@ async def join_workspace_by_id(
 
     user_workspace = db.query(UserWorkspace).filter(UserWorkspace.workspace_id == workspace_id,
                                                     UserWorkspace.user_id == user.id).first()
-    print(user_workspace)
     if user_workspace is None:
         user_workspace = UserWorkspace(user_id=user.id, workspace_id=workspace.id)
 
@@ -124,8 +123,26 @@ async def join_workspace_by_id(
     return error('You are already in this workspace')
 
 
+@router.get("/workspaces/{workspace_id}/leave", response_model=Workspace)
+async def leave_workspace_by_id(
+        workspace_id: int,
+        user: Annotated[User, Depends(get_current_active_user)],
+        db: Session = Depends(get_db),
+):
+    workspace = get_ws_by_id(db=db, workspace_id=workspace_id)
+
+    user_workspace = db.query(UserWorkspace).filter(UserWorkspace.workspace_id == workspace_id,
+                                                    UserWorkspace.user_id == user.id).first()
+    if user_workspace is not None:
+        db.query(UserWorkspace).filter_by(id=user_workspace.id).delete()
+        db.commit()
+        return workspace
+
+    return error('You are not in this workspace')
+
+
 @router.get("/workspaces/{workspace_id}/users", response_model=List[User])
-async def get_workspace_rooms(
+async def get_workspace_users(
         workspace_id: int,
         db: Session = Depends(get_db),
 ):

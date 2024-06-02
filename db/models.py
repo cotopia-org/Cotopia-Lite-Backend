@@ -9,13 +9,13 @@ from sqlalchemy.orm import relationship
 
 
 class Base(DeclarativeBase):
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, )
     created_at: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.now(timezone.utc), nullable=False)
     updated_at: Mapped[datetime.datetime] = mapped_column(nullable=True)
 
 
 class User(Base):
     __tablename__ = "users"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, )
 
     username: Mapped[str] = mapped_column(String(100), unique=True, index=True, nullable=False)
     password: Mapped[str] = mapped_column(String(511), nullable=False)
@@ -35,6 +35,8 @@ class User(Base):
 
 class Workspace(Base):
     __tablename__ = "workspaces"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, )
+
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
     user: Mapped["User"] = relationship(back_populates="workspaces")
@@ -53,6 +55,7 @@ class Workspace(Base):
 
 class UserWorkspace(Base):
     __tablename__ = "user_workspace"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, )
 
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     user: Mapped["User"] = relationship(back_populates="user_workspace")
@@ -66,6 +69,7 @@ class UserWorkspace(Base):
 
 class Role(Base):
     __tablename__ = "roles"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, )
 
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -75,6 +79,7 @@ class Role(Base):
 
 class Room(Base):
     __tablename__ = "rooms"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, )
 
     workspace_id: Mapped[int] = mapped_column(ForeignKey("workspaces.id"))
     workspace: Mapped["Workspace"] = relationship(back_populates="rooms")
@@ -82,7 +87,7 @@ class Room(Base):
     is_active: Mapped[bool] = mapped_column(Boolean(), default=True)
     is_locked: Mapped[bool] = mapped_column(Boolean(), default=True)
 
-    password: Mapped[str] = mapped_column(String(511), nullable=False)
+    password: Mapped[str] = mapped_column(String(511), nullable=True)
 
     title: Mapped[str] = mapped_column(String(100), nullable=False)
     status: Mapped[str] = mapped_column(String(100), nullable=True)
@@ -90,7 +95,7 @@ class Room(Base):
     avatar: Mapped[str] = mapped_column(String(255), nullable=True)
 
     background_image: Mapped[str] = mapped_column(String(255), nullable=True)
-    landing_spot: Mapped[str] = mapped_column(String(100), nullable=False, default="0, 0")
+    landing_spot: Mapped[str] = mapped_column(String(100), nullable=True, default="0, 0")
 
     messages: Mapped[List["Message"]] = relationship(back_populates="room")
     room_user: Mapped[List["RoomUser"]] = relationship(back_populates="room")
@@ -98,6 +103,7 @@ class Room(Base):
 
 class Message(Base):
     __tablename__ = "messages"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, )
 
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     user: Mapped["User"] = relationship(back_populates="messages")
@@ -126,6 +132,7 @@ class VideoStatus(enum.Enum):
 
 class RoomUser(Base):
     __tablename__ = "room_user"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, )
 
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     user: Mapped["User"] = relationship(back_populates="room_user")
@@ -135,19 +142,20 @@ class RoomUser(Base):
 
     is_active: Mapped[bool] = mapped_column(Boolean(), default=True)
     voice_status: Mapped[VoiceStatus] = mapped_column(Enum(VoiceStatus),
-                                                      default=VoiceStatus.disconnected)
+                                                      default=VoiceStatus.disconnected, nullable=True)
     video_status: Mapped[VideoStatus] = mapped_column(Enum(VideoStatus),
-                                                      default=VideoStatus.disconnected)
+                                                      default=VideoStatus.disconnected, nullable=True)
 
-    coordinates: Mapped[str] = mapped_column(String(100), nullable=False, default="0, 0")
-    screenshare_coordinates: Mapped[str] = mapped_column(String(100), nullable=False, default="0, 0")
-    screenshare_size: Mapped[str] = mapped_column(String(100), nullable=False, default="0, 0")
-    video_coordinates: Mapped[str] = mapped_column(String(100), nullable=False, default="0, 0")
-    video_size: Mapped[str] = mapped_column(String(100), nullable=False, default="0, 0")
+    coordinates: Mapped[str] = mapped_column(String(100), nullable=True, default="0, 0")
+    screenshare_coordinates: Mapped[str] = mapped_column(String(100), nullable=True, default="0, 0")
+    screenshare_size: Mapped[str] = mapped_column(String(100), nullable=True, default="0, 0")
+    video_coordinates: Mapped[str] = mapped_column(String(100), nullable=True, default="0, 0")
+    video_size: Mapped[str] = mapped_column(String(100), nullable=True, default="0, 0")
 
 
 class Setting(Base):
     __tablename__ = "settings"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, )
 
     workspace_id: Mapped[int] = mapped_column(ForeignKey("workspaces.id"))
     workspace: Mapped["Workspace"] = relationship(back_populates="settings")
@@ -157,6 +165,7 @@ class Setting(Base):
 
 class Permission(Base):
     __tablename__ = "permissions"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, )
 
     ability: Mapped[str] = mapped_column(String(4096), nullable=False)
     permission_role: Mapped[List["PermissionRole"]] = relationship(back_populates='permission')
@@ -164,6 +173,7 @@ class Permission(Base):
 
 class PermissionRole(Base):
     __tablename__ = "permission_role"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, )
 
     permission_id: Mapped[int] = mapped_column(ForeignKey("permissions.id"))
     permission: Mapped["Permission"] = relationship(back_populates="permission_role")
@@ -174,6 +184,7 @@ class PermissionRole(Base):
 
 class File(Base):
     __tablename__ = "files"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, )
 
     fileable_id: Mapped[int] = mapped_column(Integer(), nullable=False)
     fileable_type: Mapped[str] = mapped_column(String(255), nullable=False)
