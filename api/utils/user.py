@@ -1,3 +1,4 @@
+import datetime
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
@@ -43,6 +44,7 @@ def create_user(db: Session, user: UserCreate):
 
 def edit_user(db: Session, user_id: int, user: UserUpdate):
     db_user = db.query(UserModel).get(user_id)
+    db_user.updated_at = datetime.datetime.now(datetime.timezone.utc)
 
     # Update model class variable from requested fields
     for var, value in vars(user).items():
