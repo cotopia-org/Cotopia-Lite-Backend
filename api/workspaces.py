@@ -20,9 +20,9 @@ router = fastapi.APIRouter()
 
 @router.post("/workspaces/create", response_model=Workspace, status_code=201)
 async def create_workspace(
-        workspace: WorkspaceCreate,
-        current_user: Annotated[User, Depends(get_current_active_user)],
-        db: Session = Depends(get_db),
+    workspace: WorkspaceCreate,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
 ):
     db_ws = (
         db.query(WorkspaceModel).filter(WorkspaceModel.name == workspace.name).first()
@@ -36,8 +36,8 @@ async def create_workspace(
 
 @router.get("/workspaces/{workspace_id}", response_model=Workspace)
 async def get_workspace_by_id(
-        workspace_id: int,
-        db: Session = Depends(get_db),
+    workspace_id: int,
+    db: Session = Depends(get_db),
 ):
     db_workspace = get_ws_by_id(db=db, workspace_id=workspace_id)
     if db_workspace is None:
@@ -47,12 +47,14 @@ async def get_workspace_by_id(
     return db_workspace
 
 
-@router.put("/workspaces/{workspace_id}/update", response_model=Workspace, status_code=200)
+@router.put(
+    "/workspaces/{workspace_id}/update", response_model=Workspace, status_code=200
+)
 async def update_workspace(
-        workspace_id: int,
-        workspace: WorkspaceUpdate,
-        current_user: Annotated[User, Depends(get_current_active_user)],
-        db: Session = Depends(get_db),
+    workspace_id: int,
+    workspace: WorkspaceUpdate,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
 ):
     db_workspace = get_ws_by_id(db=db, workspace_id=workspace_id)
     if db_workspace is None:
@@ -70,9 +72,9 @@ async def update_workspace(
 
 @router.delete("/workspaces/{workspace_id}/delete", status_code=204)
 async def delete_workspace(
-        workspace_id: int,
-        current_user: Annotated[User, Depends(get_current_active_user)],
-        db: Session = Depends(get_db),
+    workspace_id: int,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
 ):
     db_workspace = get_ws_by_id(db=db, workspace_id=workspace_id)
     if db_workspace is None:
@@ -90,9 +92,9 @@ async def delete_workspace(
 
 @router.get("/workspaces/{workspace_id}/rooms", response_model=List[Room])
 async def get_workspace_rooms(
-        workspace_id: int,
-        current_user: Annotated[User, Depends(get_current_active_user)],
-        db: Session = Depends(get_db),
+    workspace_id: int,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
 ):
     rooms = get_da_rooms_by_workspace(db=db, workspace_id=workspace_id)
     return rooms
@@ -100,14 +102,19 @@ async def get_workspace_rooms(
 
 @router.get("/workspaces/{workspace_id}/join", response_model=Workspace)
 async def join_workspace_by_id(
-        workspace_id: int,
-        user: Annotated[User, Depends(get_current_active_user)],
-        db: Session = Depends(get_db),
+    workspace_id: int,
+    user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
 ):
     workspace = get_ws_by_id(db=db, workspace_id=workspace_id)
 
-    user_workspace = db.query(UserWorkspace).filter(UserWorkspace.workspace_id == workspace_id,
-                                                    UserWorkspace.user_id == user.id).first()
+    user_workspace = (
+        db.query(UserWorkspace)
+        .filter(
+            UserWorkspace.workspace_id == workspace_id, UserWorkspace.user_id == user.id
+        )
+        .first()
+    )
     if user_workspace is None:
         user_workspace = UserWorkspace(user_id=user.id, workspace_id=workspace.id)
 
@@ -115,31 +122,36 @@ async def join_workspace_by_id(
         db.commit()
         return workspace
 
-    return error('You are already in this workspace')
+    return error("You are already in this workspace")
 
 
 @router.get("/workspaces/{workspace_id}/leave", response_model=Workspace)
 async def leave_workspace_by_id(
-        workspace_id: int,
-        user: Annotated[User, Depends(get_current_active_user)],
-        db: Session = Depends(get_db),
+    workspace_id: int,
+    user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
 ):
     workspace = get_ws_by_id(db=db, workspace_id=workspace_id)
 
-    user_workspace = db.query(UserWorkspace).filter(UserWorkspace.workspace_id == workspace_id,
-                                                    UserWorkspace.user_id == user.id).first()
+    user_workspace = (
+        db.query(UserWorkspace)
+        .filter(
+            UserWorkspace.workspace_id == workspace_id, UserWorkspace.user_id == user.id
+        )
+        .first()
+    )
     if user_workspace is not None:
         db.query(UserWorkspace).filter_by(id=user_workspace.id).delete()
         db.commit()
         return workspace
 
-    return error('You are not in this workspace')
+    return error("You are not in this workspace")
 
 
 @router.get("/workspaces/{workspace_id}/users", response_model=List[User])
 async def get_workspace_users(
-        workspace_id: int,
-        db: Session = Depends(get_db),
+    workspace_id: int,
+    db: Session = Depends(get_db),
 ):
     users = []
     workspace = get_ws_by_id(db=db, workspace_id=workspace_id)

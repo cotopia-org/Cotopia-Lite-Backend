@@ -1,18 +1,18 @@
 import asyncio
 import logging
-from signal import SIGINT, SIGTERM
-from typing import Union
 import os
 from os import getenv
+from signal import SIGINT, SIGTERM
+from typing import Union
 
-
-from livekit import api, rtc
 from dotenv import load_dotenv
+from livekit import api, rtc
 
 # ensure LIVEKIT_URL, LIVEKIT_API_KEY, and LIVEKIT_API_SECRET are set
 
 load_dotenv()
 getenv("LIVEKIT_API_KEY")
+
 
 async def main(room: rtc.Room) -> None:
     @room.on("participant_connected")
