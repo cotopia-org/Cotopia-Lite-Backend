@@ -7,27 +7,15 @@ from sqlalchemy.orm import Session
 from api.utils.auth import get_current_active_user
 from api.utils.helpers import error
 from api.utils.room import get_da_rooms_by_workspace
-from api.utils.workspace import create_ws, get_ws_by_id, edit_ws, delete_ws
+from api.utils.workspace import create_ws, delete_ws, edit_ws, get_ws_by_id
 from db.db_setup import get_db
 from db.models import UserWorkspace
+from db.models import Workspace as WorkspaceModel
 from schemas.room import Room
 from schemas.user import User
 from schemas.workspace import Workspace, WorkspaceCreate, WorkspaceUpdate
 
 router = fastapi.APIRouter()
-
-
-@router.get("/workspaces/", response_model=Workspace)
-async def get_workspace_by_id(
-        current_user: Annotated[User, Depends(get_current_active_user)],
-        db: Session = Depends(get_db),
-):
-    db_workspace = get_ws_by_id(db=db, workspace_id=workspace_id)
-    if db_workspace is None:
-        raise HTTPException(
-            status_code=404, detail=f"Workspace (id = {workspace_id}) not found!"
-        )
-    return db_workspace
 
 
 @router.post("/workspaces/create", response_model=Workspace, status_code=201)
@@ -36,6 +24,13 @@ async def create_workspace(
         current_user: Annotated[User, Depends(get_current_active_user)],
         db: Session = Depends(get_db),
 ):
+    db_ws = (
+        db.query(WorkspaceModel).filter(WorkspaceModel.name == workspace.name).first()
+    )
+    if db_ws:
+        raise HTTPException(
+            status_code=400, detail="There is another workspace with this name."
+        )
     return create_ws(db=db, workspace=workspace, user_id=current_user.id)
 
 
