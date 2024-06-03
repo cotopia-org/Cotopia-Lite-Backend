@@ -96,3 +96,21 @@ def test_user_workspace(client):
         headers={"Authorization": f"Bearer {client.token}"},
     )
     assert response.status_code == 200, response.text
+
+
+def test_room_user(client):
+    test_user_workspace(client)
+
+    response = client.post(
+        "/room",
+        headers={"Authorization": f"Bearer {client.token}"},
+        json={"workspace_id": client.ws_id, "title": "test_room"},
+    )
+    assert response.status_code == 201, response.text
+    client.room_id = response.json()["id"]
+
+    response = client.get(
+        f"/rooms/{client.room_id}/join",
+        headers={"Authorization": f"Bearer {client.token}"},
+    )
+    assert response.status_code == 200, response.text
