@@ -114,7 +114,7 @@ async def room_status(
             try:
                 RoomUserUpdate.model_validate(data)
                 try:
-                    ruu = RoomUserUpdate(user_id=1, room_id=room_id)
+                    ruu = RoomUserUpdate(user_id=current_user.id, room_id=room_id)
                     for i in data:
                         if i == "user_id" or i == "room_id":
                             pass
