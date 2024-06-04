@@ -27,6 +27,10 @@ def get_room_msgs(db: Session, room_id: int, skip: int = 0, limit: int = 100):
     )
 
 
+def get_msg_by_id(db: Session, message_id: int):
+    return db.query(MessageModel).filter(MessageModel.id == message_id).first()
+
+
 def edit_msg(db: Session, message_id: int, message: MessageUpdate):
     db_msg = db.query(MessageModel).get(message_id)
     db_msg.updated_at = datetime.datetime.now(datetime.timezone.utc)
