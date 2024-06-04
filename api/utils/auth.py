@@ -5,7 +5,7 @@ from typing import Annotated
 from dotenv import load_dotenv
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
-from jose import jwt, JWTError
+from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -75,7 +75,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 
 
 async def get_current_user_or_none(
-        token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)
+    token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)
 ):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -92,7 +92,7 @@ async def get_current_user_or_none(
 
 
 async def get_current_user(
-        token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)
+    token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)
 ):
     user = await get_current_user_or_none(token, db)
     if user is None:
@@ -101,13 +101,13 @@ async def get_current_user(
 
 
 async def get_current_active_user(
-        current_user: Annotated[schemas.User, Depends(get_current_user)]
+    current_user: Annotated[schemas.User, Depends(get_current_user)],
 ):
     return current_user
 
 
 async def get_current_active_admin(
-        current_user: Annotated[schemas.User, Depends(get_current_user)]
+    current_user: Annotated[schemas.User, Depends(get_current_user)],
 ):
     if "admin" not in current_user.roles:
         raise UNAUTHORIZED

@@ -34,7 +34,7 @@ def create_ws(db: Session, workspace: WorkspaceCreate, user_id: int):
 def get_ws_by_id(db: Session, workspace_id: int):
     ws = db.query(WorkspaceModel).filter(WorkspaceModel.id == workspace_id).first()
     if ws is None:
-        return error('Workspace not found', 404)
+        return error("Workspace not found", 404)
     return ws
 
 

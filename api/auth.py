@@ -23,8 +23,8 @@ router = fastapi.APIRouter()
 
 @router.post("/auth/login", response_model=Token)
 async def login(
-        user: UserCreate,
-        db: Session = Depends(get_db),
+    user: UserCreate,
+    db: Session = Depends(get_db),
 ):
     user = authenticate_user(db, user.username, user.password)
 

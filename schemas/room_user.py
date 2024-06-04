@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict
 
-from db.models import VoiceStatus, VideoStatus
+from db.models import VideoStatus, VoiceStatus
 
 
 class RoomUserBase(BaseModel):

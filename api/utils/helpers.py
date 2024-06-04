@@ -1,12 +1,12 @@
 from fastapi import HTTPException
 
 
-def response(data=None, message='Success'):
+def response(data=None, message="Success"):
     return {
-        'meta': {
-            'message': message,
+        "meta": {
+            "message": message,
         },
-        'data': data
+        "data": data,
     }
 
 

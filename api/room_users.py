@@ -2,14 +2,14 @@ from typing import Annotated
 
 import fastapi
 from fastapi import Depends, HTTPException, WebSocket, WebSocketDisconnect
+from pydantic import ValidationError
 from sqlalchemy.orm import Session
 
-from api.utils.room_user import create_ru, delete_ru, edit_ru, get_ru
 from api.utils.auth import get_current_active_user
+from api.utils.room_user import create_ru, delete_ru, edit_ru, get_ru
 from db.db_setup import get_db
 from schemas.room_user import RoomUser, RoomUserCreate, RoomUserUpdate
 from schemas.user import User
-from pydantic import ValidationError
 
 router = fastapi.APIRouter()
 
@@ -126,14 +126,18 @@ async def room_status(
                     )
                     return
             except ValidationError as ve:
-                await manager.send_personal_message(message=str(ve), websocket=websocket)
+                await manager.send_personal_message(
+                    message=str(ve), websocket=websocket
+                )
                 return
-            
+
             print("validation done!")
             # TO-DO
             # get room_id and user_id from data and check permission
-            updated = edit_ru(db=db, room_id=room_id, user_id=current_user.id, room_user=ruu)
+            updated = edit_ru(
+                db=db, room_id=room_id, user_id=current_user.id, room_user=ruu
+            )
             await manager.broadcast(updated)
-            
+
     except WebSocketDisconnect:
         manager.disconnect(websocket)
