@@ -22,3 +22,15 @@ async def send_message(
     db: Session = Depends(get_db),
 ):
     return create_msg(db=db, message=message, user_id=current_user.id, room_id=room_id)
+
+
+@router.get("/messages", response_model=List[Message])
+async def get_messages(
+    room_id: int,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+):
+    messages = get_room_msgs(db=db, room_id=room_id, skip=skip, limit=limit)
+    return messages
