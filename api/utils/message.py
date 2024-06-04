@@ -39,3 +39,10 @@ def edit_msg(db: Session, message_id: int, message: MessageUpdate):
     db.add(db_msg)
     db.commit()
     return db_msg
+
+
+def delete_msg(db: Session, message_id: int):
+    db_msg = db.query(MessageModel).get(message_id)
+    db.delete(db_msg)
+    db.commit()
+    return db_msg
