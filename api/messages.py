@@ -55,3 +55,23 @@ async def edit_message(
             raise HTTPException(
                 status_code=403, detail="You are not the author of this message!"
             )
+
+
+@router.delete("/messages/{message_id}/delete", status_code=204)
+async def delete_message(
+    message_id: int,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+):
+    db_message = get_msg_by_id(db=db, message_id=message_id)
+    if db_message is None:
+        raise HTTPException(
+            status_code=404, detail=f"Message (id = {message_id}) not found!"
+        )
+    else:
+        if db_message.user_id == current_user.id:
+            delete_msg(db=db, message_id=message_id)
+        else:
+            raise HTTPException(
+                status_code=403, detail="You are not the author of this message!"
+            )
