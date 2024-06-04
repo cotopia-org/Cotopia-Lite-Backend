@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 from schemas.room import Room
@@ -19,6 +21,9 @@ class Message(MessageBase):
 
     edited: bool
     text: str
+
+    created_at: datetime
+    updated_at: datetime | None = None
 
     class Config:
         orm_mode = True
