@@ -11,12 +11,12 @@ class MessageBase(BaseModel):
     room_id: int
 
 
-class MessageCreate(MessageBase):
+class MessageCreate(BaseModel):
     text: str
     reply_to: int | None = None
 
 
-class MessageUpdate(MessageBase):
+class MessageUpdate(BaseModel):
     text: str
 
 
@@ -24,6 +24,8 @@ class Message(MessageBase):
     id: int
     user: User
     room: Room
+    text: str
+    reply_to: int | None = None
     edited: bool
     created_at: datetime
     updated_at: datetime | None = None
