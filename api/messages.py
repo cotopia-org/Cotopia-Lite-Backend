@@ -5,9 +5,14 @@ from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from api.utils.auth import get_current_active_user
-from api.utils.message import create_msg, get_room_msgs, edit_msg, delete_msg, get_msg_by_id
+from api.utils.message import (
+    create_msg,
+    delete_msg,
+    edit_msg,
+    get_msg_by_id,
+    get_room_msgs,
+)
 from db.db_setup import get_db
-from db.models import Message as MessageModel
 from schemas.message import Message, MessageCreate, MessageUpdate
 from schemas.user import User
 
