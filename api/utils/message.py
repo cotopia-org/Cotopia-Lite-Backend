@@ -13,3 +13,13 @@ def create_msg(db: Session, message: MessageCreate, user_id: int, room_id: int):
     db.commit()
     db.refresh(db_msg)
     return db_msg
+
+
+def get_room_msgs(db: Session, room_id: int, skip: int = 0, limit: int = 100):
+    return (
+        db.query(MessageModel)
+        .filter(MessageModel.room_id == room_id)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
