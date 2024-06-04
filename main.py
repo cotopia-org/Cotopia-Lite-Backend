@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api import auth, room_users, rooms, users, workspaces
+from api import auth, messages, room_users, rooms, users, workspaces
 from db.db_setup import Base, engine
 
 Base.metadata.create_all(bind=engine)
@@ -38,3 +38,4 @@ app.include_router(auth.router)
 app.include_router(workspaces.router)
 app.include_router(rooms.router)
 app.include_router(room_users.router)
+app.include_router(messages.router)
