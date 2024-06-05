@@ -17,8 +17,12 @@ def create_da_pr(db: Session, permission_role: PermissionRoleBase):
     return db_permission_role
 
 
-def get_da_role_by_id(db: Session, role_id: int):
-    return db.query(RoleModel).filter(RoleModel.id == role_id).first()
+def get_da_pr_by_id(db: Session, permission_role_id: int):
+    return db.query(PRModel).filter(PRModel.id == permission_role_id).first()
+
+
+def get_da_pr(db: Session, permission_id: int, role_id: int):
+    return db.query(PRModel).filter(PRModel.permission_id == permission_id, PRModel.role_id == role_id).first()
 
 
 
