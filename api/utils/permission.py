@@ -21,17 +21,17 @@ def get_da_permission_by_id(db: Session, permission_id: int):
     return db.query(PermissionModel).filter(PermissionModel.id == permission_id).first()
 
 
-def edit_da_role(db: Session, role_id: int, role: RoleBase):
-    db_role = db.query(RoleModel).get(role_id)
-    db_role.updated_at = datetime.datetime.now(datetime.timezone.utc)
+def edit_da_permission(db: Session, permission_id: int, permission: PermissionBase):
+    db_permission = db.query(PermissionModel).get(permission_id)
+    db_permission.updated_at = datetime.datetime.now(datetime.timezone.utc)
 
-    for var, value in vars(role).items():
+    for var, value in vars(permission).items():
         if value:
-            setattr(db_role, var, value)
+            setattr(db_permission, var, value)
 
-    db.add(db_role)
+    db.add(db_permission)
     db.commit()
-    return db_role
+    return db_permission
 
 
 def delete_da_role(db: Session, role_id: int):
