@@ -17,8 +17,8 @@ def create_da_permission(db: Session, permission: PermissionBase):
     return db_permission
 
 
-def get_da_role_by_id(db: Session, role_id: int):
-    return db.query(RoleModel).filter(RoleModel.id == role_id).first()
+def get_da_permission_by_id(db: Session, permission_id: int):
+    return db.query(PermissionModel).filter(PermissionModel.id == permission_id).first()
 
 
 def edit_da_role(db: Session, role_id: int, role: RoleBase):
