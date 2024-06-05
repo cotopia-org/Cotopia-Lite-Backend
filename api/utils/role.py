@@ -3,7 +3,7 @@ import datetime
 from sqlalchemy.orm import Session
 
 from db.models import Role as RoleModel
-from schemas.role import RoleBase, Role
+from schemas.role import RoleBase
 
 
 def create_da_role(db: Session, role: RoleBase):
@@ -34,11 +34,8 @@ def edit_da_role(db: Session, role_id: int, role: RoleBase):
     return db_role
 
 
-def delete_da_room(db: Session, room_id: int):
-    db_room = db.query(RoomModel).get(room_id)
-    db_room.updated_at = datetime.datetime.now(datetime.timezone.utc)
-    db_room.is_active = False
-
-    db.add(db_room)
+def delete_da_role(db: Session, role_id: int):
+    db_role = db.query(RoleModel).get(role_id)
+    db.delete(db_role)
     db.commit()
-    return db_room
+    return db_role
