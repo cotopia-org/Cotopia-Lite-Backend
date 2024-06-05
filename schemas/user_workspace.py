@@ -2,20 +2,23 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-from schemas.permission import Permission
+from schemas.user import User
+from schemas.workspace import Workspace
 from schemas.role import Role
 
 
-class PermissionRoleBase(BaseModel):
-    permission_id: int
+class UserWorkspaceBase(BaseModel):
+    user_id: int
+    workspace_id: int
     role_id: int
 
 
-class PermissionRole(PermissionRoleBase):
+class UserWorkspace(UserWorkspaceBase):
     id: int
     created_at: datetime
     updated_at: datetime | None = None
-    permission: Permission
+    user: User
+    workspace: Workspace
     role: Role
 
     class Config:
