@@ -34,8 +34,8 @@ def edit_da_permission(db: Session, permission_id: int, permission: PermissionBa
     return db_permission
 
 
-def delete_da_role(db: Session, role_id: int):
-    db_role = db.query(RoleModel).get(role_id)
-    db.delete(db_role)
+def delete_da_permission(db: Session, permission_id: int):
+    db_permission = db.query(PermissionModel).get(permission_id)
+    db.delete(db_permission)
     db.commit()
-    return db_role
+    return db_permission
