@@ -17,8 +17,8 @@ def create_da_role(db: Session, role: RoleBase):
     return db_role
 
 
-def get_da_room_by_id(db: Session, room_id: int):
-    return db.query(RoomModel).filter(RoomModel.id == room_id).first()
+def get_da_role_by_id(db: Session, role_id: int):
+    return db.query(RoleModel).filter(RoleModel.id == role_id).first()
 
 
 def get_da_rooms_by_workspace(db: Session, workspace_id: int):
