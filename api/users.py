@@ -13,9 +13,11 @@ from api.utils.user import (
     get_user,
     get_users,
 )
+from api.utils.user_workspace import create_uwr
 from api.utils.workspace import get_user_workspaces
 from db.db_setup import get_db
 from schemas.user import User, UserUpdate
+from schemas.user_workspace import UserWorkspaceBase, UserWorkspace
 
 router = fastapi.APIRouter()
 
@@ -79,6 +81,17 @@ async def get_livekit_token(
         .to_jwt()
     )
     return token
+
+
+@router.post(
+    "/users/{user_id}/give_role", response_model=UserWorkspace, status_code=201
+)
+async def give_user_a_role(
+    user_workspace_role: UserWorkspaceBase,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+):
+    return create_uwr(db=db, uwr=user_workspace_role)
 
 
 # TO_DO
