@@ -22,20 +22,18 @@ async def create_role(
     return create_da_role(db=db, role=role)
 
 
-@router.delete("/permissions/{permission_id}/delete", status_code=204)
-async def delete_permission(
-    permission_id: int,
+@router.delete("/roles/{role_id}/delete", status_code=204)
+async def delete_role(
+    role_id: int,
     current_user: Annotated[User, Depends(get_current_active_user)],
     db: Session = Depends(get_db),
 ):
-    db_permission = get_da_permission_by_id(db=db, permission_id=permission_id)
-    if db_permission is None:
-        raise HTTPException(
-            status_code=404, detail=f"Permission (id = {permission_id}) not found!"
-        )
+    db_role = get_da_role_by_id(db=db, role_id=role_id)
+    if db_role is None:
+        raise HTTPException(status_code=404, detail=f"Role (id = {role_id}) not found!")
     else:
         if True:  # check permission to to this
-            delete_da_permission(db=db, permission_id=permission_id)
+            delete_da_role(db=db, role_id=role_id)
         else:
             raise HTTPException(
                 status_code=403, detail="You are not allowed to do this!"
