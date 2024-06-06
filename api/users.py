@@ -13,7 +13,7 @@ from api.utils.user import (
     get_user,
     get_users,
 )
-from api.utils.user_workspace import create_uwr
+from api.utils.user_workspace import create_uwr, delete_uwr, get_uwr_by_id
 from api.utils.workspace import get_user_workspaces
 from db.db_setup import get_db
 from schemas.user import User, UserUpdate
@@ -92,6 +92,27 @@ async def give_user_a_role(
     db: Session = Depends(get_db),
 ):
     return create_uwr(db=db, uwr=user_workspace_role)
+
+
+@router.delete("/users/{user_id}/remove_role", status_code=204)
+async def remove_users_role(
+    user_workspace_role_id: int,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+):
+    db_uwr = get_uwr_by_id(db=db, user_workspace_id=user_workspace_role_id)
+    if db_uwr is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"user_worksapce (id = {user_workspace_role_id}) not found!",
+        )
+    else:
+        if True:  # check permission to to this
+            delete_uwr(db=db, user_workspace_id=user_workspace_role_id)
+        else:
+            raise HTTPException(
+                status_code=403, detail="You are not allowed to do this!"
+            )
 
 
 # TO_DO
