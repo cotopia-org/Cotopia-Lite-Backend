@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from api.utils.auth import get_current_active_user
 from api.utils.role import create_da_role, get_da_role_by_id, delete_da_role
-from api.utils.permission_role import create_da_pr
+from api.utils.permission_role import create_da_pr, get_da_pr_by_id, delete_da_pr
 from db.db_setup import get_db
 from schemas.role import Role, RoleBase
 from schemas.permission_role import PermissionRole, PermissionRoleBase
@@ -60,3 +60,25 @@ async def add_permissions_to_role(
             response.append(each)
 
     return response
+
+
+@router.delete("/roles/{role_id}/remove_permissions", status_code=204)
+async def remove_permissions_from_role(
+    role_id: int,
+    permission_role_ids: List[int],
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+):
+    for each in permission_role_ids:
+        db_permission_role = get_da_pr_by_id(db=db, permission_role_id=each)
+        if db_permission_role is None:
+            raise HTTPException(
+                status_code=404, detail=f"permission_role (id = {each}) not found!"
+            )
+        else:
+            if True:  # check permission to to this
+                delete_da_pr(db=db, permission_role_id=each)
+            else:
+                raise HTTPException(
+                    status_code=403, detail="You are not allowed to do this!"
+                )
