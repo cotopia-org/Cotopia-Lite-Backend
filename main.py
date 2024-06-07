@@ -23,7 +23,7 @@ app = FastAPI(
     ],
 )
 
-origins = ["https://lite-api.cotopia.social", "https://lite-api.cotopia.social/"]
+origins = ["https://lite-api.cotopia.social", "https://lite-api.cotopia.social/", '*']
 
 app.add_middleware(
     CORSMiddleware,
