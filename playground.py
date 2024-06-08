@@ -6,7 +6,7 @@ from signal import SIGINT, SIGTERM
 from typing import Union
 
 from dotenv import load_dotenv
-from livekit import api, rtc
+from livekit import rtc, api
 
 # ensure LIVEKIT_URL, LIVEKIT_API_KEY, and LIVEKIT_API_SECRET are set
 
@@ -29,8 +29,8 @@ async def main(room: rtc.Room) -> None:
 
     @room.on("local_track_published")
     def on_local_track_published(
-        publication: rtc.LocalTrackPublication,
-        track: Union[rtc.LocalAudioTrack, rtc.LocalVideoTrack],
+            publication: rtc.LocalTrackPublication,
+            track: Union[rtc.LocalAudioTrack, rtc.LocalVideoTrack],
     ):
         logging.info("local track published: %s", publication.sid)
 
@@ -44,7 +44,7 @@ async def main(room: rtc.Room) -> None:
 
     @room.on("track_published")
     def on_track_published(
-        publication: rtc.RemoteTrackPublication, participant: rtc.RemoteParticipant
+            publication: rtc.RemoteTrackPublication, participant: rtc.RemoteParticipant
     ):
         logging.info(
             "track published: %s from participant %s (%s)",
@@ -55,15 +55,15 @@ async def main(room: rtc.Room) -> None:
 
     @room.on("track_unpublished")
     def on_track_unpublished(
-        publication: rtc.RemoteTrackPublication, participant: rtc.RemoteParticipant
+            publication: rtc.RemoteTrackPublication, participant: rtc.RemoteParticipant
     ):
         logging.info("track unpublished: %s", publication.sid)
 
     @room.on("track_subscribed")
     def on_track_subscribed(
-        track: rtc.Track,
-        publication: rtc.RemoteTrackPublication,
-        participant: rtc.RemoteParticipant,
+            track: rtc.Track,
+            publication: rtc.RemoteTrackPublication,
+            participant: rtc.RemoteParticipant,
     ):
         logging.info("track subscribed: %s", publication.sid)
         if track.kind == rtc.TrackKind.KIND_VIDEO:
@@ -76,37 +76,38 @@ async def main(room: rtc.Room) -> None:
 
     @room.on("track_unsubscribed")
     def on_track_unsubscribed(
-        track: rtc.Track,
-        publication: rtc.RemoteTrackPublication,
-        participant: rtc.RemoteParticipant,
+            track: rtc.Track,
+            publication: rtc.RemoteTrackPublication,
+            participant: rtc.RemoteParticipant,
     ):
         logging.info("track unsubscribed: %s", publication.sid)
 
     @room.on("track_muted")
     def on_track_muted(
-        publication: rtc.RemoteTrackPublication, participant: rtc.RemoteParticipant
+            publication: rtc.RemoteTrackPublication, participant: rtc.RemoteParticipant
     ):
         logging.info("track muted: %s", publication.sid)
 
     @room.on("track_unmuted")
     def on_track_unmuted(
-        publication: rtc.RemoteTrackPublication, participant: rtc.RemoteParticipant
+            publication: rtc.RemoteTrackPublication, participant: rtc.RemoteParticipant
     ):
         logging.info("track unmuted: %s", publication.sid)
 
     @room.on("data_received")
     def on_data_received(data: rtc.DataPacket):
+        print('HERE')
         logging.info("received data from %s: %s", data.participant.identity, data.data)
 
     @room.on("connection_quality_changed")
     def on_connection_quality_changed(
-        participant: rtc.Participant, quality: rtc.ConnectionQuality
+            participant: rtc.Participant, quality: rtc.ConnectionQuality
     ):
         logging.info("connection quality changed for %s", participant.identity)
 
     @room.on("track_subscription_failed")
     def on_track_subscription_failed(
-        participant: rtc.RemoteParticipant, track_sid: str, error: str
+            participant: rtc.RemoteParticipant, track_sid: str, error: str
     ):
         logging.info("track subscription failed: %s %s", participant.identity, error)
 
@@ -132,12 +133,12 @@ async def main(room: rtc.Room) -> None:
 
     token = (
         api.AccessToken()
-        .with_identity("python-bot")
-        .with_name("Python Bot")
+        .with_identity("1")
+        .with_name("Ktr")
         .with_grants(
             api.VideoGrants(
                 room_join=True,
-                room="my-room",
+                room='1',
             )
         )
         .to_jwt()
@@ -148,7 +149,9 @@ async def main(room: rtc.Room) -> None:
     logging.info("participants: %s", room.participants)
 
     await asyncio.sleep(2)
-    await room.local_participant.publish_data("hello world")
+    print(vars(room))
+    msg = await room.local_participant.publish_data("hello world")
+    logging.info("message sent: %s", msg)
 
 
 if __name__ == "__main__":
@@ -160,9 +163,11 @@ if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     room = rtc.Room(loop=loop)
 
+
     async def cleanup():
         await room.disconnect()
         loop.stop()
+
 
     asyncio.ensure_future(main(room))
     for signal in [SIGINT, SIGTERM]:

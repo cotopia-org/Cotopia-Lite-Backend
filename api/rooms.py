@@ -2,6 +2,7 @@ from typing import Annotated, List
 
 import fastapi
 from fastapi import Depends, HTTPException
+from livekit import api
 from sqlalchemy.orm import Session
 
 from api.utils.auth import get_current_active_user
@@ -23,18 +24,18 @@ router = fastapi.APIRouter()
 
 @router.post("/room", response_model=Room, status_code=201)
 async def create_room(
-    room: RoomCreate,
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
+        room: RoomCreate,
+        current_user: Annotated[User, Depends(get_current_active_user)],
+        db: Session = Depends(get_db),
 ):
     return create_da_room(db=db, room=room, workspace_id=room.workspace_id)
 
 
 @router.get("/room/{room_id}", response_model=Room)
 async def get_room_by_id(
-    room_id: int,
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
+        room_id: int,
+        current_user: Annotated[User, Depends(get_current_active_user)],
+        db: Session = Depends(get_db),
 ):
     db_room = get_da_room_by_id(db=db, room_id=room_id)
     if db_room is None:
@@ -44,10 +45,10 @@ async def get_room_by_id(
 
 @router.put("/room/{room_id}", response_model=Room, status_code=200)
 async def update_room(
-    room_id: int,
-    room: RoomUpdate,
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
+        room_id: int,
+        room: RoomUpdate,
+        current_user: Annotated[User, Depends(get_current_active_user)],
+        db: Session = Depends(get_db),
 ):
     db_room = get_da_room_by_id(db=db, room_id=room_id)
     if db_room is None:
@@ -64,9 +65,9 @@ async def update_room(
 
 @router.delete("/room/{room_id}", status_code=204)
 async def delete_room(
-    room_id: int,
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
+        room_id: int,
+        current_user: Annotated[User, Depends(get_current_active_user)],
+        db: Session = Depends(get_db),
 ):
     db_room = get_da_room_by_id(db=db, room_id=room_id)
     if db_room is None:
@@ -83,8 +84,8 @@ async def delete_room(
 
 @router.get("/rooms/{room_id}/users", response_model=List[User])
 async def get_room_users(
-    room_id: int,
-    db: Session = Depends(get_db),
+        room_id: int,
+        db: Session = Depends(get_db),
 ):
     users = []
     room = get_da_room_by_id(db=db, room_id=room_id)
@@ -96,9 +97,9 @@ async def get_room_users(
 
 @router.get("/rooms/{room_id}/join", response_model=Room)
 async def join_workspace_by_id(
-    room_id: int,
-    user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
+        room_id: int,
+        user: Annotated[User, Depends(get_current_active_user)],
+        db: Session = Depends(get_db),
 ):
     room = get_da_room_by_id(db=db, room_id=room_id)
 
@@ -112,6 +113,18 @@ async def join_workspace_by_id(
 
         db.add(room_user)
         db.commit()
+
+        token = (
+            api.AccessToken()
+            .with_identity(user.username)
+            .with_name(user.name)
+            .with_grants(api.VideoGrants(
+                room_join=True,
+                room=room.id,
+            ))
+            .to_jwt()
+        )
+        room.token = token
         return room
 
     return error("You are already in this room")
@@ -119,9 +132,9 @@ async def join_workspace_by_id(
 
 @router.get("/rooms/{room_id}/leave", response_model=Room)
 async def leave_room_by_id(
-    room_id: int,
-    user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
+        room_id: int,
+        user: Annotated[User, Depends(get_current_active_user)],
+        db: Session = Depends(get_db),
 ):
     room = get_da_room_by_id(db=db, room_id=room_id)
 
@@ -140,8 +153,8 @@ async def leave_room_by_id(
 
 @router.get("/rooms/{room_id}/messages", response_model=List[Message])
 async def get_room_users(
-    room_id: int,
-    db: Session = Depends(get_db),
+        room_id: int,
+        db: Session = Depends(get_db),
 ):
     messages = []
     room = get_da_room_by_id(db=db, room_id=room_id)

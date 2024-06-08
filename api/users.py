@@ -24,10 +24,10 @@ router = fastapi.APIRouter()
 
 @router.get("/users", response_model=List[User])
 async def read_users(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    skip: int = 0,
-    limit: int = 100,
-    db: Session = Depends(get_db),
+        current_user: Annotated[User, Depends(get_current_active_user)],
+        skip: int = 0,
+        limit: int = 100,
+        db: Session = Depends(get_db),
 ):
     users = get_users(db, skip=skip, limit=limit)
     return users
@@ -35,32 +35,32 @@ async def read_users(
 
 @router.get("/users/me")
 async def read_user_me(
-    current_user: Annotated[User, Depends(get_current_active_user)],
+        current_user: Annotated[User, Depends(get_current_active_user)],
 ):
     return current_user
 
 
 @router.post("/users/update", response_model=User)
 async def update_user(
-    user: UserUpdate,
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
+        user: UserUpdate,
+        current_user: Annotated[User, Depends(get_current_active_user)],
+        db: Session = Depends(get_db),
 ):
     return edit_user(db=db, user_id=current_user.id, user=user)
 
 
 @router.get("/users/workspaces")
 async def user_workspaces(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
+        current_user: Annotated[User, Depends(get_current_active_user)],
+        db: Session = Depends(get_db),
 ):
     return get_user_workspaces(user=current_user)
 
 
 @router.get("/users/{user_id}", response_model=User)
 async def read_user(
-    user_id: int,
-    db: Session = Depends(get_db),
+        user_id: int,
+        db: Session = Depends(get_db),
 ):
     db_user = get_user(db=db, user_id=user_id)
     if db_user is None:
@@ -68,37 +68,34 @@ async def read_user(
     return db_user
 
 
-@router.get("/livekit/token")
-async def get_livekit_token(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
-):
-    token = (
-        api.AccessToken()
-        .with_identity(current_user.username)
-        .with_name(current_user.name)
-        .with_grants(api.VideoGrants())
-        .to_jwt()
+@router.get("/livekit/rooms")
+async def get_rooms():
+    lkapi = api.LiveKitAPI(
+        'https://live-kit-server.cotopia.social/',
     )
-    return token
+
+    # results = await lkapi.room.list_participants(api.ListParticipantsRequest(room='1'))
+    results = await lkapi.room.list_rooms(api.ListRoomsRequest())
+    print(results, 'HERE')
+    await lkapi.aclose()
 
 
 @router.post(
     "/users/{user_id}/give_role", response_model=UserWorkspace, status_code=201
 )
 async def give_user_a_role(
-    user_workspace_role: UserWorkspaceBase,
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
+        user_workspace_role: UserWorkspaceBase,
+        current_user: Annotated[User, Depends(get_current_active_user)],
+        db: Session = Depends(get_db),
 ):
     return create_uwr(db=db, uwr=user_workspace_role)
 
 
 @router.delete("/users/{user_id}/remove_role", status_code=204)
 async def remove_users_role(
-    user_workspace_role_id: int,
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
+        user_workspace_role_id: int,
+        current_user: Annotated[User, Depends(get_current_active_user)],
+        db: Session = Depends(get_db),
 ):
     db_uwr = get_uwr_by_id(db=db, user_workspace_id=user_workspace_role_id)
     if db_uwr is None:
@@ -113,7 +110,6 @@ async def remove_users_role(
             raise HTTPException(
                 status_code=403, detail="You are not allowed to do this!"
             )
-
 
 # TO_DO
 # get /users/me/workspaces

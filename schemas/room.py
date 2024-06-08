@@ -26,6 +26,7 @@ class Room(RoomUpdate):
     is_active: bool
     created_at: datetime
     updated_at: datetime | None = None
+    token: str | None = None
 
     class Config:
         orm_mode = True
