@@ -13,7 +13,7 @@ from api.utils.user import (
     get_user,
     get_users,
 )
-from api.utils.user_workspace import create_uwr, delete_uwr, get_uwr_by_id
+from api.utils.user_workspace import create_uwr, delete_uwr_by_id, get_uwr_by_id
 from api.utils.workspace import get_user_workspaces
 from db.db_setup import get_db
 from schemas.user import User, UserUpdate
@@ -105,7 +105,7 @@ async def remove_users_role(
         )
     else:
         if True:  # check permission to to this
-            delete_uwr(db=db, user_workspace_id=user_workspace_role_id)
+            delete_uwr_by_id(db=db, user_workspace_id=user_workspace_role_id)
         else:
             raise HTTPException(
                 status_code=403, detail="You are not allowed to do this!"

@@ -72,3 +72,10 @@ def delete_uwr(db: Session, user_workspace_id: int):
     db.delete(db_uwr)
     db.commit()
     return db_uwr
+
+
+def delete_uwr_by_id(db: Session, user_workspace_id: int):
+    db_uwr = db.query(UWRModel).get(user_workspace_id)
+    db.delete(db_uwr)
+    db.commit()
+    return db_uwr
