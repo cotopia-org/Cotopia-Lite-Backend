@@ -114,22 +114,20 @@ async def join_workspace_by_id(
         db.add(room_user)
         db.commit()
 
-        token = (
-            api.AccessToken()
-            .with_identity(user.username)
-            .with_name(user.name)
-            .with_grants(
-                api.VideoGrants(
-                    room_join=True,
-                    room=str(room.id),
-                )
+    token = (
+        api.AccessToken()
+        .with_identity(str(user.id))
+        .with_name(user.name)
+        .with_grants(
+            api.VideoGrants(
+                room_join=True,
+                room=str(room.id),
             )
-            .to_jwt()
         )
-        room.token = token
-        return room
-
-    return error("You are already in this room")
+        .to_jwt()
+    )
+    room.token = token
+    return room
 
 
 @router.get("/rooms/{room_id}/leave", response_model=Room)
