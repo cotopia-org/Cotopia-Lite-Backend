@@ -21,11 +21,12 @@ class UserUpdate(UserBase):
     email: str | None = None
 
 
-class User(UserUpdate):
+class User(UserBase):
     id: int
     is_active: bool
     created_at: datetime
-    updated_at: datetime | None = None
+    avatar: str | None = None
+    bio: str | None = None
 
     class Config:
         orm_mode = True

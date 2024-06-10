@@ -3,7 +3,7 @@ import enum
 from datetime import timezone
 from typing import List
 
-from sqlalchemy import Boolean, Enum, ForeignKey, Integer, String
+from sqlalchemy import Boolean, ForeignKey, Integer, String, Enum
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -12,6 +12,19 @@ class Base(DeclarativeBase):
         default=datetime.datetime.now(timezone.utc), nullable=False
     )
     updated_at: Mapped[datetime.datetime] = mapped_column(nullable=True)
+
+
+class VoiceStatus(enum.Enum):
+    disconnected = "disconnected"
+    muted = "muted"
+    unmuted = "unmuted"
+    deafened = "deafened"
+
+
+class VideoStatus(enum.Enum):
+    disconnected = "disconnected"
+    camera = "sharing camera"
+    screen = "sharing screen"
 
 
 class User(Base):
@@ -39,7 +52,29 @@ class User(Base):
     workspaces: Mapped[List["Workspace"]] = relationship(back_populates="user")
     messages: Mapped[List["Message"]] = relationship(back_populates="user")
     user_workspace: Mapped[List["UserWorkspace"]] = relationship(back_populates="user")
-    room_user: Mapped[List["RoomUser"]] = relationship(back_populates="user")
+
+    room_id: Mapped[int] = mapped_column(ForeignKey("rooms.id"), nullable=True)
+
+    room: Mapped["Room"] = relationship(back_populates="users")
+
+    voice_status: Mapped[VoiceStatus] = mapped_column(
+        Enum(VoiceStatus), default=VoiceStatus.disconnected, nullable=True
+    )
+    video_status: Mapped[VideoStatus] = mapped_column(
+        Enum(VideoStatus), default=VideoStatus.disconnected, nullable=True
+    )
+
+    coordinates: Mapped[str] = mapped_column(String(100), nullable=True, default="0, 0")
+    screenshare_coordinates: Mapped[str] = mapped_column(
+        String(100), nullable=True, default="0, 0"
+    )
+    screenshare_size: Mapped[str] = mapped_column(
+        String(100), nullable=True, default="0, 0"
+    )
+    video_coordinates: Mapped[str] = mapped_column(
+        String(100), nullable=True, default="0, 0"
+    )
+    video_size: Mapped[str] = mapped_column(String(100), nullable=True, default="0, 0")
 
 
 class Workspace(Base):
@@ -131,7 +166,7 @@ class Room(Base):
     activities: Mapped[List["Activity"]] = relationship(back_populates="room")
 
     messages: Mapped[List["Message"]] = relationship(back_populates="room")
-    room_user: Mapped[List["RoomUser"]] = relationship(back_populates="room")
+    users: Mapped[List["User"]] = relationship(back_populates="room")
 
 
 class Message(Base):
@@ -151,53 +186,6 @@ class Message(Base):
 
     edited: Mapped[bool] = mapped_column(Boolean(), default=False)
     text: Mapped[str] = mapped_column(String(10000), nullable=False)
-
-
-class VoiceStatus(enum.Enum):
-    disconnected = "disconnected"
-    muted = "muted"
-    unmuted = "unmuted"
-    deafened = "deafened"
-
-
-class VideoStatus(enum.Enum):
-    disconnected = "disconnected"
-    camera = "sharing camera"
-    screen = "sharing screen"
-
-
-class RoomUser(Base):
-    __tablename__ = "room_user"
-    id: Mapped[int] = mapped_column(
-        primary_key=True,
-        autoincrement=True,
-    )
-
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    user: Mapped["User"] = relationship(back_populates="room_user")
-
-    room_id: Mapped[int] = mapped_column(ForeignKey("rooms.id"))
-    room: Mapped["Room"] = relationship(back_populates="room_user")
-
-    is_active: Mapped[bool] = mapped_column(Boolean(), default=True)
-    voice_status: Mapped[VoiceStatus] = mapped_column(
-        Enum(VoiceStatus), default=VoiceStatus.disconnected, nullable=True
-    )
-    video_status: Mapped[VideoStatus] = mapped_column(
-        Enum(VideoStatus), default=VideoStatus.disconnected, nullable=True
-    )
-
-    coordinates: Mapped[str] = mapped_column(String(100), nullable=True, default="0, 0")
-    screenshare_coordinates: Mapped[str] = mapped_column(
-        String(100), nullable=True, default="0, 0"
-    )
-    screenshare_size: Mapped[str] = mapped_column(
-        String(100), nullable=True, default="0, 0"
-    )
-    video_coordinates: Mapped[str] = mapped_column(
-        String(100), nullable=True, default="0, 0"
-    )
-    video_size: Mapped[str] = mapped_column(String(100), nullable=True, default="0, 0")
 
 
 class Setting(Base):

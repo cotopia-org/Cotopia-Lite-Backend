@@ -2,6 +2,8 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
+from schemas.user import User
+
 
 class RoomBase(BaseModel):
     workspace_id: int
@@ -27,6 +29,7 @@ class Room(RoomUpdate):
     created_at: datetime
     updated_at: datetime | None = None
     token: str | None = None
+    users: list[User]
 
     class Config:
         orm_mode = True
