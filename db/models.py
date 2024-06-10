@@ -24,7 +24,7 @@ class User(Base):
     username: Mapped[str] = mapped_column(
         String(100), unique=True, index=True, nullable=False
     )
-    password: Mapped[str] = mapped_column(String(511), nullable=False)
+    password: Mapped[str] = mapped_column(String(511), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean(), default=True)
 
     name: Mapped[str] = mapped_column(String(255), nullable=True)
@@ -35,6 +35,7 @@ class User(Base):
     avatar: Mapped[str] = mapped_column(String(255), nullable=True)
     bio: Mapped[str] = mapped_column(String(255), nullable=True)
 
+    activities: Mapped[List["Activity"]] = relationship(back_populates="user")
     workspaces: Mapped[List["Workspace"]] = relationship(back_populates="user")
     messages: Mapped[List["Message"]] = relationship(back_populates="user")
     user_workspace: Mapped[List["UserWorkspace"]] = relationship(back_populates="user")
@@ -60,6 +61,8 @@ class Workspace(Base):
     is_private: Mapped[bool] = mapped_column(Boolean(), default=True)
     avatar: Mapped[str] = mapped_column(String(255), nullable=True)
     banner: Mapped[str] = mapped_column(String(255), nullable=True)
+
+    activities: Mapped[List["Activity"]] = relationship(back_populates="workspace")
 
     rooms: Mapped[List["Room"]] = relationship(back_populates="workspace")
     settings: Mapped[List["Setting"]] = relationship(back_populates="workspace")
@@ -93,7 +96,7 @@ class Role(Base):
     )
 
     title: Mapped[str] = mapped_column(String(255), nullable=False)
-    description: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[str] = mapped_column(String(255), nullable=True)
     user_workspace: Mapped[List["UserWorkspace"]] = relationship(back_populates="role")
     permission_role: Mapped[List["PermissionRole"]] = relationship(
         back_populates="role"
@@ -124,6 +127,8 @@ class Room(Base):
     landing_spot: Mapped[str] = mapped_column(
         String(100), nullable=True, default="0, 0"
     )
+
+    activities: Mapped[List["Activity"]] = relationship(back_populates="room")
 
     messages: Mapped[List["Message"]] = relationship(back_populates="room")
     room_user: Mapped[List["RoomUser"]] = relationship(back_populates="room")
@@ -246,3 +251,26 @@ class File(Base):
     fileable_type: Mapped[str] = mapped_column(String(255), nullable=False)
     mime_type: Mapped[str] = mapped_column(String(255), nullable=True)
     path: Mapped[str] = mapped_column(String(255), nullable=False)
+
+
+class Activity(Base):
+    __tablename__ = "activities"
+    id: Mapped[int] = mapped_column(
+        primary_key=True,
+        autoincrement=True,
+    )
+
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=True)
+    user: Mapped["User"] = relationship(back_populates="activities")
+
+    workspace_id: Mapped[int] = mapped_column(
+        ForeignKey("workspaces.id"), nullable=True
+    )
+    workspace: Mapped["Workspace"] = relationship(back_populates="activities")
+
+    room_id: Mapped[int] = mapped_column(ForeignKey("rooms.id"), nullable=True)
+    room: Mapped["Room"] = relationship(back_populates="activities")
+
+    event_type: Mapped[str] = mapped_column(String(255), nullable=False)
+    state: Mapped[str] = mapped_column(String(255), nullable=True)
+    event_id: Mapped[str] = mapped_column(String(255), nullable=False)
