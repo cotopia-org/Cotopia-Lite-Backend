@@ -6,7 +6,7 @@ from typing import IO
 import filetype
 
 UPLOAD_DIR = Path() / "uploads"
-MAX_FILE_SIZE = 4 * 2097152  # 8MB
+MAX_FILE_SIZE = 2 * 2097152  # 4MB
 ALLOWED_FILE_TYPES = [
     "image/png",
     "image/jpeg",
@@ -40,7 +40,7 @@ def validate_file(file: IO):
     ):
         raise HTTPException(
             status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-            detail="Unsupported file type",
+            detail="Unsupported file type!",
         )
 
     real_file_size = 0
@@ -48,7 +48,7 @@ def validate_file(file: IO):
         real_file_size += len(chunk)
         if real_file_size > MAX_FILE_SIZE:
             raise HTTPException(
-                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail="Too large"
+                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail="File too large!"
             )
 
 
