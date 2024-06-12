@@ -14,6 +14,7 @@ email_validator==2.1.1
 exceptiongroup==1.2.1
 fastapi==0.111.0
 fastapi-cli==0.0.3
+filetype==1.2.0
 frozenlist==1.4.1
 greenlet==3.0.3
 h11==0.14.0
