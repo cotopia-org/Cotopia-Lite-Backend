@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api import auth, messages, rooms, users, workspaces, permissions, roles, lk, socket
+from api import auth, messages, rooms, users, workspaces, permissions, roles, lk, files
 from db.db_setup import Base, engine
 
 Base.metadata.create_all(bind=engine)
@@ -23,7 +23,7 @@ app = FastAPI(
     ],
 )
 
-origins = ["*"]
+origins = ["https://lite-api.cotopia.social", "https://lite-api.cotopia.social/", "*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -41,4 +41,4 @@ app.include_router(messages.router)
 app.include_router(permissions.router)
 app.include_router(roles.router)
 app.include_router(lk.router)
-app.include_router(socket.router)
+app.include_router(files.router)
