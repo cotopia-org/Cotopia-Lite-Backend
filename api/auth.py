@@ -5,7 +5,7 @@ from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 from starlette.requests import Request
 from starlette.responses import JSONResponse
-from authlib.integrations.starlette_client import OAuth,OAuthError
+# from authlib.integrations.starlette_client import OAuth,OAuthError
 from settings import CLIENT_ID,CLIENT_SECRET
 
 
